@@ -29,13 +29,13 @@ from .nodes.routing_helper import (
 class Graph:
     def __init__(self) -> None:   
         pass
-    async def run(self, company: str, url: str):
+    async def run(self, company: str, url: str, output_format: str = "pdf"):
                   # Initial message setup
         messages = [
             SystemMessage(content="You are an expert researcher ready to begin the information gathering process.")
         ]
         # Initialize ResearchState with provided company and URL
-        state = ResearchState(company=company, company_url=url, messages=messages)
+        state = ResearchState(company=company, company_url=url, output_format=output_format, messages=messages)
 
         # Initialize nodes
         initial_search_node = InitialSearchNode()
