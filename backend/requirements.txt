@@ -1,0 +1,11 @@
+langgraph
+tavily-python
+langchain
+langchain_openai
+pypandoc
+pandoc
+tldextract
+python-dotenv
+fpdf
+
+
