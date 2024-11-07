@@ -116,9 +116,6 @@ This tool’s adaptable design enables it to serve various research applications
 - **Extend Workflow Nodes**: Add, remove, or adjust workflow nodes to focus on specific aspects of research or analysis.
 - **Adjust Output Formats**: Customize the styling or format (e.g., via CSS for PDF styling) to match organizational needs.
 
-Certainly! Here’s the updated **Future Directions** section to emphasize the broader applications and Tavily’s dual role in both the initial search and data curation steps.
-
----
 
 ## Future Directions
 
