@@ -6,5 +6,9 @@ pypandoc
 pandoc
 tldextract
 fpdf
+flask
+fastapi 
+uvicorn
+python-multipart
 
 

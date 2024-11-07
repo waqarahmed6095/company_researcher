@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Research Tool</title>
+</head>
+<body>
+    <h1>Company Research Tool</h1>
+    <form action="/api/research" method="post">
+        <label for="companyName">Company Name:</label>
+        <input type="text" id="companyName" name="companyName" required><br><br>
+
+        <label for="companyUrl">Company URL:</label>
+        <input type="url" id="companyUrl" name="companyUrl" required><br><br>
+
+        <label for="outputFormat">Output Format:</label>
+        <select id="outputFormat" name="outputFormat">
+            <option value="pdf">PDF</option>
+            <option value="markdown">Markdown</option>
+        </select><br><br>
+
+        <button type="submit">Generate Report</button>
+    </form>
+</body>
+</html>
