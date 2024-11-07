@@ -1,5 +1,5 @@
 from typing import Literal
-from .format_classes import ResearchState
+from ..format_classes import ResearchState
 
 def route_based_on_cluster(state: ResearchState) -> Literal["curate", "manual_cluster_selection"]:
     if state.get('chosen_cluster'):

@@ -5,7 +5,6 @@ langchain_openai
 pypandoc
 pandoc
 tldextract
-python-dotenv
 fpdf
 
 

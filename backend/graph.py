@@ -17,15 +17,14 @@ from .nodes import (
     EvaluationNode,
     PublishNode
 )
-from .routing_helper import (
+from .nodes.routing_helper import (
     route_based_on_cluster, 
     route_after_manual_selection, 
     should_continue_research,
     route_based_on_evaluation
 )
 
-from dotenv import load_dotenv
-load_dotenv('.env')
+
 
 class Graph:
     def __init__(self) -> None:   
