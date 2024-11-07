@@ -1,4 +1,4 @@
-# Company Researcher Workflow with Tavily and AI Agents
+# Company Researcher with Tavily and AI Agents
 
 This open-source **Company Research Tool** leverages Tavily’s powerful `search` and `extract` capabilities to automate in-depth company research. The tool follows a structured, agent-driven workflow that dynamically curates and generates well-organized, comprehensive company reports, making it ideal for competitive intelligence, lead research, and Go-to-Market (GTM) analysis.
 
