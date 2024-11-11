@@ -34,6 +34,9 @@ This workflow leverages Tavily's deep extraction and search functionalities in c
 ### Prerequisites
 
 - **Python 3.11 or later**: [Python Installation Guide](https://www.tutorialsteacher.com/python/install-python)
+- Tavily API Key - [Sign Up](https://tavily.com/)
+- OpenAI API Key - [Sign Up](https://platform.openai.com/)
+
 
 ### Installation
 
