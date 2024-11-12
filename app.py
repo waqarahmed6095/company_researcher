@@ -1,10 +1,9 @@
-# app.py
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request  # Import Request here
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
-from backend.graph import Graph  # Adjust this import if necessary
+from backend.graph import Graph  # Adjust this import if necessary 
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
@@ -18,17 +17,21 @@ async def index(request: Request):  # Add the type hint here
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
+        # Receive initial data from the WebSocket client
         data = await websocket.receive_json()
         company_name = data.get("companyName")
         company_url = data.get("companyUrl")
         output_format = data.get("outputFormat", "pdf")
         
-        graph = Graph()
+        # Initialize the Graph with company, URL, and output format
+        graph = Graph(company=company_name, url=company_url, output_format=output_format, websocket=websocket)
         
+        # Progress callback to send messages back to the client
         async def progress_callback(message):
             await websocket.send_text(message)
 
-        await graph.run(company=company_name, url=company_url, output_format=output_format, progress_callback=progress_callback, websocket=websocket)
+        # Run the graph process without additional arguments
+        await graph.run(progress_callback=progress_callback)
         
         await websocket.send_text("Research completed.")
     except WebSocketDisconnect:
