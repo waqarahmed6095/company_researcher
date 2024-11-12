@@ -61,38 +61,16 @@ This workflow leverages Tavily's deep extraction and search functionalities in c
    pip install -r requirements.txt
    ```
 
-### Running the Application
+4. **Run the app**
 
-1. Open `app.py` and configure the **company name**, **URL**, and optionally the **output format** (`pdf` or `markdown`). If `output_format` is omitted, it defaults to `pdf`.
+```bash
+python app.py
+```
 
-   Example configuration in `app.py`:
-
-   ```python
-   # app.py
-   import asyncio
-   from .graph import Graph
-
-   async def main():
-       # Initialize the Graph
-       graph = Graph()
-
-       # Define company name, URL, and output format
-       company_name = "Tavily"  # Replace with the desired company name
-       company_url = "https://tavily.com/"  # Replace with the desired company URL
-       output_format = "pdf"  # Optional: specify "markdown" for Markdown format
-
-       # Run the research process
-       await graph.run(company=company_name, url=company_url, output_format=output_format)
-
-   if __name__ == "__main__":
-       asyncio.run(main())
-   ```
-
-2. **Start the application**:
-
-   ```bash
-   python -m backend.app
-   ```
+5. **Open the app in your browser**
+```bash
+http://localhost:8000
+```
 
 ## Workflow Features
 
