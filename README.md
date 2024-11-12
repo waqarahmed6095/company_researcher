@@ -63,14 +63,14 @@ This workflow leverages Tavily's deep extraction and search functionalities in c
 
 4. **Run the app**
 
-```bash
-python app.py
-```
+   ```bash
+   python app.py
+   ```
 
 5. **Open the app in your browser**
-```bash
-http://localhost:8000
-```
+   ```bash
+   http://localhost:8000
+   ```
 
 ## Workflow Features
 
