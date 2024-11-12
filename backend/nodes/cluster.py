@@ -110,12 +110,12 @@ class ClusterNode:
         return {"messages": [AIMessage(content=msg)], "document_clusters": clusters, "chosen_cluster": None}
     
         # Attempt to automatically choose the correct cluster
-        for cluster in clusters:
+        for index,cluster in enumerate(clusters):
             # Check if any URL in the cluster starts with the company URL
             if any(url.startswith(company_url) for url in cluster.cluster):
-                state['chosen_cluster'] = cluster
+                # state['chosen_cluster'] = index
                 msg = f"Automatically selected cluster for '{company_url}' as {cluster.company_name}."
-                return {"messages": [AIMessage(content=msg)], "chosen_cluster": state['chosen_cluster']}
+                return {"messages": [AIMessage(content=msg)], "chosen_cluster": index}
 
         # If no automatic match, indicate that manual selection is needed
         msg = "No automatic cluster match found. Please select the correct cluster manually."

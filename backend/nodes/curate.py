@@ -10,7 +10,10 @@ class CurateNode:
     def __init__(self):
         pass
     async def curate(self, state: ResearchState):
-        chosen_cluster = state['chosen_cluster']
+        chosen_cluster_index = state['chosen_cluster']
+        clusters = state['document_clusters']
+        print(chosen_cluster_index)
+        chosen_cluster = clusters[chosen_cluster_index]
         msg = f"Curating and enhancing documents for selected cluster '{chosen_cluster.company_name}'...\n"
 
         # Filter `documents` to include only those in the chosen cluster

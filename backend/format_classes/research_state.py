@@ -16,7 +16,7 @@ class ResearchState(TypedDict):
     sub_questions: TavilySearchInput
     documents: Dict[str, Dict[Union[str, int], Union[str, float]]]
     document_clusters: List[DocumentCluster]
-    chosen_cluster: DocumentCluster
+    chosen_cluster: int
     report: str
     eval: ReportEvaluation
     output_format: str

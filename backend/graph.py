@@ -5,10 +5,10 @@ from functools import partial
 from langgraph.graph import StateGraph
 
 # Import research state class
-from .format_classes.research_state import ResearchState
+from backend.format_classes.research_state import ResearchState
 
 # Import node classes
-from .nodes import (
+from backend.nodes import (
     InitialSearchNode, 
     SubQuestionsNode, 
     ResearcherNode, 
@@ -19,7 +19,7 @@ from .nodes import (
     EvaluationNode,
     PublishNode
 )
-from .nodes.routing_helper import (
+from backend.nodes.routing_helper import (
     route_based_on_cluster, 
     route_after_manual_selection, 
     should_continue_research,
@@ -28,65 +28,73 @@ from .nodes.routing_helper import (
 
 
 class Graph:
-    def __init__(self) -> None:
-        pass
-
-    async def run(self, company: str, url: str, output_format: str = "pdf", progress_callback=None, websocket=None):
-        # Initial message setup
-        messages = [
+    def __init__(self, company=None, url=None, output_format="pdf", websocket=None):
+        # Initial setup of ResearchState and messages
+        self.messages = [
             SystemMessage(content="You are an expert researcher ready to begin the information gathering process.")
         ]
+        # Initialize ResearchState
+        self.state = ResearchState(
+            company=company, 
+            company_url=url, 
+            output_format=output_format, 
+            messages=self.messages
+        )
+        # Initialize nodes as attributes
+        self.initial_search_node = InitialSearchNode()
+        self.sub_questions_node = SubQuestionsNode()
+        self.researcher_node = ResearcherNode()
+        self.cluster_node = ClusterNode()
+        self.manual_selection_node = ManualSelectionNode()  # Now an attribute
+        self.curate_node = CurateNode()
+        self.generate_node = GenerateNode()
+        self.evaluation_node = EvaluationNode()
+        self.publish_node = PublishNode()
 
-        # Initialize ResearchState with provided company and URL
-        state = ResearchState(company=company, company_url=url, output_format=output_format, messages=messages)
+        # Initialize workflow for the graph
+        self.workflow = StateGraph(ResearchState)
 
-        # Initialize nodes
-        initial_search_node = InitialSearchNode()
-        sub_questions_node = SubQuestionsNode()
-        researcher_node = ResearcherNode()
-        cluster_node = ClusterNode()
-        manual_selection_node = ManualSelectionNode()
-        curate_node = CurateNode()
-        generate_node = GenerateNode()
-        evaluation_node = EvaluationNode()
-        publish_node = PublishNode()
-
-        # Define Research State Graph
-        workflow = StateGraph(ResearchState)
-
-        # Add nodes to graph
-        workflow.add_node("initial_search", initial_search_node.run)
-        workflow.add_node("sub_questions_gen", sub_questions_node.run)
-        workflow.add_node("research", researcher_node.run)
-        workflow.add_node("cluster", cluster_node.run)
-        workflow.add_node("manual_cluster_selection", partial(manual_selection_node.run, websocket=websocket))
-        workflow.add_node("curate", curate_node.run)
-        workflow.add_node("generate_report", generate_node.run)
-        workflow.add_node("eval_report", evaluation_node.run)
-        workflow.add_node("publish", publish_node.run)
+        # Add nodes to the workflow
+        self.workflow.add_node("initial_search", self.initial_search_node.run)
+        self.workflow.add_node("sub_questions_gen", self.sub_questions_node.run)
+        self.workflow.add_node("research", self.researcher_node.run)
+        self.workflow.add_node("cluster", self.cluster_node.run)
+        self.workflow.add_node("manual_cluster_selection", partial(self.manual_selection_node.run, websocket=websocket))
+        self.workflow.add_node("curate", self.curate_node.run)
+        self.workflow.add_node("generate_report", self.generate_node.run)
+        self.workflow.add_node("eval_report", self.evaluation_node.run)
+        self.workflow.add_node("publish", self.publish_node.run)
         
         # Add edges to graph
-        workflow.add_edge("initial_search", "sub_questions_gen")
-        workflow.add_edge("sub_questions_gen", "research")
-        workflow.add_edge("research", "cluster")
+        self.workflow.add_edge("initial_search", "sub_questions_gen")
+        self.workflow.add_edge("sub_questions_gen", "research")
+        self.workflow.add_edge("research", "cluster")
 
-        workflow.add_conditional_edges("cluster", route_based_on_cluster)
-        workflow.add_conditional_edges("manual_cluster_selection", route_after_manual_selection)
-        workflow.add_conditional_edges("curate", should_continue_research)
-        workflow.add_edge("generate_report", "eval_report")
-        workflow.add_conditional_edges("eval_report", route_based_on_evaluation)
+        self.workflow.add_conditional_edges("cluster", route_based_on_cluster)
+        self.workflow.add_conditional_edges("manual_cluster_selection", route_after_manual_selection)
+        self.workflow.add_conditional_edges("curate", should_continue_research)
+        self.workflow.add_edge("generate_report", "eval_report")
+        self.workflow.add_conditional_edges("eval_report", route_based_on_evaluation)
 
         # Set start and end nodes
-        workflow.set_entry_point("initial_search")
-        workflow.set_finish_point("publish")
+        self.workflow.set_entry_point("initial_search")
+        self.workflow.set_finish_point("publish")
 
+
+    async def run(self, progress_callback=None):
+        
         # Compile the graph
-        graph = workflow.compile()
+        graph = self.workflow.compile()
        
         # Execute the graph asynchronously and send progress updates
-        async for s in graph.astream(state, stream_mode="values"):
+        async for s in graph.astream(self.state, stream_mode="values"):
             message = s["messages"][-1]
             output_message = message.content if hasattr(message, "content") else str(message)
 
             if progress_callback and not getattr(message, "is_manual_selection", False):
                 await progress_callback(output_message)
+
+    def compile(self):
+    # compile the graph and return it (for LangGraph Studio)
+        graph = self.workflow.compile(interrupt_before=["manual_cluster_selection"])
+        return graph
