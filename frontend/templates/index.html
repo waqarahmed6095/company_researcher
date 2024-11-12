@@ -4,23 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Company Research Tool</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <h1>Company Research Tool</h1>
-    <form action="/api/research" method="post">
-        <label for="companyName">Company Name:</label>
-        <input type="text" id="companyName" name="companyName" required><br><br>
+    <div class="container">
+        <!-- User Input Section -->
+        <div class="input-section">
+            <h2>User Input</h2>
+            <form id="research-form">
+                <label for="companyName">Company Name:</label>
+                <input type="text" id="companyName" name="companyName" required>
 
-        <label for="companyUrl">Company URL:</label>
-        <input type="url" id="companyUrl" name="companyUrl" required><br><br>
+                <label for="companyUrl">Company URL:</label>
+                <input type="url" id="companyUrl" name="companyUrl" required>
 
-        <label for="outputFormat">Output Format:</label>
-        <select id="outputFormat" name="outputFormat">
-            <option value="pdf">PDF</option>
-            <option value="markdown">Markdown</option>
-        </select><br><br>
+                <label for="outputFormat">Output Format:</label>
+                <select id="outputFormat" name="outputFormat">
+                    <option value="pdf">PDF</option>
+                    <option value="markdown">Markdown</option>
+                </select>
 
-        <button type="submit">Generate Report</button>
-    </form>
+                <button type="button" onclick="startResearch()">Generate Report</button>
+            </form>
+
+            <!-- Cluster Selection (Initially Hidden) -->
+            <div class="cluster-input" id="cluster-selection" style="display: none;">
+                <input type="text" id="cluster-input" placeholder="Enter cluster number here...">
+                <button type="button" onclick="submitClusterSelection()">Submit</button>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <h2>Progress</h2>
+            <div id="progress"></div>
+        </div>
+
+        <!-- Final Report Section -->
+        <div class="final-report-section">
+            <h2>Final Report</h2>
+            <div id="report"></div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
 </body>
 </html>

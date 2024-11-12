@@ -28,23 +28,23 @@ class ClusterNode:
         # LLM prompt to categorize documents accurately
         prompt = f"""
             We conducted a search for a company called '{company}', but the results may include documents from other companies with similar names or domains.
-            Your task is to categorize the retrieved documents by identifying which specific company they pertain to, using the initial company information as the "ground truth" to help distinguish the correct company.
-
+            Your task is to accurately categorize these retrieved documents based on which specific company they pertain to, using the initial company information as "ground truth."
 
             ### Target Company Information
             - **Company Name**: '{company}'
             - **Primary Domain**: '{target_domain}'
-            - **Initial Context (Ground Truth)**: Information provided below should serve as a verification baseline to ensure relevance. Use it to confirm that the document content aligns directly with {company}.
+            - **Initial Context (Ground Truth)**: Information below should act as a verification baseline. Use it to confirm that the document content aligns directly with {company}.
             - **{initial_docs}**
 
             ### Retrieved Documents for Clustering
             Below are the retrieved documents, including URLs and brief content snippets:
             {[{'url': doc['url'], 'snippet': doc['content']} for doc in all_retrieved_urls]}
 
-            ### Instructions
-            - **Prioritize Domain Match**: Documents that contain '{target_domain}' should be included in the main cluster for '{company}'.
-            - **Consider Aligned Third-Party Sources**: Documents from third-party domains can also be included in the '{company}' cluster if they strongly reference the target domain '{target_domain}' within their content or closely match the initial context of {company}.
-            - **Separate Similar but Distinct Domains**: Documents from domains that resemble '{target_domain}', such as '{target_domain.replace('.com', '.io')}', should be placed in distinct clusters unless they explicitly reference the target domain and align with the company's context.
+            ### Clustering Instructions
+            - **Primary Domain Priority**: Documents with URLs containing '{target_domain}' should be prioritized for the main cluster for '{company}'.
+            - **Include Relevant Third-Party Sources**: Documents from third-party domains (e.g., news sites, industry reports) should also be included in the '{company}' cluster if they provide specific information about '{company}', reference '{target_domain}', or closely match the initial company context.
+            - **Separate Similar But Distinct Domains**: Documents from similar but distinct domains (e.g., '{target_domain.replace('.com', '.io')}') should be placed in separate clusters unless they explicitly reference the target domain and align with the company's context.
+            - **Handle Ambiguities Separately**: Documents that lack clear alignment with '{company}' should be placed in an "Ambiguous" cluster for further review.
 
             ### Example Output Format
             {{
@@ -72,10 +72,10 @@ class ClusterNode:
             }}
 
             ### Key Points
-            - **Primary Domain Verification**: Documents containing '{target_domain}' should be grouped under '{company}'.
-            - **Third-Party Documents**: Documents from other domains may belong to '{company}' if they directly reference '{target_domain}' within the content or match the initial company context.
-            - **Handle Ambiguities Separately**: Place documents that do not clearly align in an "Ambiguous" cluster for further review.
+            - **Focus on Relevant Content**: Documents that contain relevant references to '{company}' (even from third-party domains) should be clustered with '{company}' if they align well with the initial information and context provided.
+            - **Identify Ambiguities**: Any documents without clear relevance to '{company}' should be placed in the "Ambiguous" cluster for manual review.
         """
+
 
 
 
@@ -106,7 +106,9 @@ class ClusterNode:
     async def choose_cluster(self, state: ResearchState):
         company_url = state['company_url']
         clusters = state['document_clusters']
-
+        msg = "No automatic cluster match found. Please select the correct cluster manually."
+        return {"messages": [AIMessage(content=msg)], "document_clusters": clusters, "chosen_cluster": None}
+    
         # Attempt to automatically choose the correct cluster
         for cluster in clusters:
             # Check if any URL in the cluster starts with the company URL

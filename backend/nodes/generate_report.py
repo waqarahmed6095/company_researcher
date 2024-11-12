@@ -1,4 +1,5 @@
 import tldextract
+import re
 from datetime import datetime
 from langchain_core.messages import AIMessage, SystemMessage
 from ..format_classes import ResearchState, QuotedAnswer
@@ -7,6 +8,12 @@ from ..utils.utils import final_model
 class GenerateNode:
     def __init__(self):
         pass
+    def clean_quote(self, quote: str) -> str:
+        # Remove leading/trailing whitespace
+        quote = quote.strip()
+        # Replace multiple spaces and newlines with single spaces
+        quote = re.sub(r'\s+', ' ', quote)
+        return quote
     async def generate_report(self, state: ResearchState):
             # Define a consistent title and subtitle format
         report_title = f"Weekly Report on {state['company']}"
@@ -60,7 +67,8 @@ class GenerateNode:
             full_report += "\n\n### Citations\n"
             for citation in response.citations:
                 domain_name = tldextract.extract(citation.source_id).domain.capitalize()  # Extract and capitalize the domain name
-                full_report += f"- [{domain_name}]({citation.source_id}): \"{citation.quote}\"\n"
+                cleaned_quote = self.clean_quote(citation.quote)
+                full_report += f"- [{domain_name}]({citation.source_id}): \"{cleaned_quote}\"\n"
 
             # Return the report with the title, subtitle, and content
         return {"messages": [AIMessage(content=f"Generated Report:\n{full_report}")], "report": full_report}

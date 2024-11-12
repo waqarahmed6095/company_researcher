@@ -20,14 +20,16 @@ class SubQuestionsNode:
             Your task is to generate 5 to 6 specific sub-questions that will provide a thorough understanding of the company: '{state['company']}'.
             
             ### Key Areas to Explore:
-            - **Company Background**: Include history and mission.
-            - **Products and Services**: Focus on main offerings and unique features.
+            - **Company Background**: Include history, mission, headquarters location, and number of employees.
+            - **Products and Services**: Focus on main offerings, unique features, and target customer segments.
             - **Market Position**: Address competitive standing, market reach, and industry impact.
-            - **Financials**: Ask about recent funding, revenue milestones, or growth indicators.
-            - **Reputation and Partnerships**: Explore public perception, major partnerships, and any recent developments.
+            - **Financials**: Seek recent funding, revenue milestones, financial performance, and growth indicators.
+            - **Reputation and Partnerships**: Explore public perception, major partnerships, and recent developments.
 
-            Use the initial information provided from the company's website below, keeping questions directly relevant to **{state['company']}**.
+            Ensure these questions include specific inquiries about **number of employees**, **headquarters location**, and **revenue** as they are essential details for the report.
             
+            Use the initial information provided from the company's website below to keep questions directly relevant to **{state['company']}**.
+
             Official URL: {state['company_url']}
             Initial Company Information:
             {state["initial_documents"]}
@@ -38,7 +40,7 @@ class SubQuestionsNode:
             # Use LLM to generate sub-questions
             messages = [SystemMessage(content=prompt)]
             sub_questions = await model.with_structured_output(TavilySearchInput).ainvoke(messages)
-            msg += f"Generated {len(sub_questions.sub_queries)} sub-questions.\n"
+            msg += f"Generated {len(sub_questions.sub_queries)} sub-questions specific.\n"
         except Exception as e:
             msg = f"An error occurred during sub-question generation: {str(e)}"
         

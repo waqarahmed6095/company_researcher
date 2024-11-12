@@ -1,5 +1,7 @@
+# In graph.py
 import os
 from langchain_core.messages import SystemMessage
+from functools import partial
 from langgraph.graph import StateGraph
 
 # Import research state class
@@ -25,15 +27,16 @@ from .nodes.routing_helper import (
 )
 
 
-
 class Graph:
-    def __init__(self) -> None:   
+    def __init__(self) -> None:
         pass
-    async def run(self, company: str, url: str, output_format: str = "pdf"):
-                  # Initial message setup
+
+    async def run(self, company: str, url: str, output_format: str = "pdf", progress_callback=None, websocket=None):
+        # Initial message setup
         messages = [
             SystemMessage(content="You are an expert researcher ready to begin the information gathering process.")
         ]
+
         # Initialize ResearchState with provided company and URL
         state = ResearchState(company=company, company_url=url, output_format=output_format, messages=messages)
 
@@ -56,15 +59,13 @@ class Graph:
         workflow.add_node("sub_questions_gen", sub_questions_node.run)
         workflow.add_node("research", researcher_node.run)
         workflow.add_node("cluster", cluster_node.run)
-        workflow.add_node("manual_cluster_selection", manual_selection_node.run)
+        workflow.add_node("manual_cluster_selection", partial(manual_selection_node.run, websocket=websocket))
         workflow.add_node("curate", curate_node.run)
         workflow.add_node("generate_report", generate_node.run)
         workflow.add_node("eval_report", evaluation_node.run)
         workflow.add_node("publish", publish_node.run)
         
-        
-
-        # Set up edges
+        # Add edges to graph
         workflow.add_edge("initial_search", "sub_questions_gen")
         workflow.add_edge("sub_questions_gen", "research")
         workflow.add_edge("research", "cluster")
@@ -82,19 +83,10 @@ class Graph:
         # Compile the graph
         graph = workflow.compile()
        
-
-        # Initial message setup
-        messages = [
-            SystemMessage(content="You are an expert researcher ready to begin the information gathering process.")
-        ]
-
-        # Asynchronous execution of the graph
+        # Execute the graph asynchronously and send progress updates
         async for s in graph.astream(state, stream_mode="values"):
             message = s["messages"][-1]
-            if isinstance(message, tuple):
-                print(message)
-            else:
-                message.pretty_print()
+            output_message = message.content if hasattr(message, "content") else str(message)
 
-
-
+            if progress_callback and not getattr(message, "is_manual_selection", False):
+                await progress_callback(output_message)
