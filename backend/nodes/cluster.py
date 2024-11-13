@@ -76,10 +76,6 @@ class ClusterNode:
             - **Identify Ambiguities**: Any documents without clear relevance to '{company}' should be placed in the "Ambiguous" cluster for manual review.
         """
 
-
-
-
-
         # LLM call with structured output using DocumentClusters
         messages = [SystemMessage(content=prompt)]
         
@@ -106,9 +102,7 @@ class ClusterNode:
     async def choose_cluster(self, state: ResearchState):
         company_url = state['company_url']
         clusters = state['document_clusters']
-        msg = "No automatic cluster match found. Please select the correct cluster manually."
-        return {"messages": [AIMessage(content=msg)], "document_clusters": clusters, "chosen_cluster": None}
-    
+     
         # Attempt to automatically choose the correct cluster
         for index,cluster in enumerate(clusters):
             # Check if any URL in the cluster starts with the company URL
