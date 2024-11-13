@@ -1,6 +1,7 @@
+
 # Company Researcher with Tavily and AI Agents
 
-This open-source **Company Research Tool** leverages Tavily’s powerful `search` and `extract` capabilities to automate in-depth company research. The tool follows a structured, agent-driven workflow that dynamically curates and generates well-organized, comprehensive company reports, making it ideal for competitive intelligence, lead research, and Go-to-Market (GTM) analysis.
+The **Company Researcher** is an open-source tool designed for in-depth company analysis. Built with **Tavily’s `search` and `extract` capabilities** and powered by **LangGraph**, it delivers accurate, real-time insights in a structured, modular workflow. Ideal for competitive intelligence, lead generation, and Go-to-Market (GTM) strategies, this tool leverages advanced AI-driven workflows to provide comprehensive, reliable reports for data-driven decision-making.
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -8,26 +9,36 @@ This open-source **Company Research Tool** leverages Tavily’s powerful `search
    - [Prerequisites](#prerequisites)
    - [Installation](#installation)
    - [Running the Application](#running-the-application)
-3. [Workflow Features](#workflow-features)
-4. [Workflow Diagram](#workflow-diagram)
+3. [Key Workflow Features](#key-workflow-features)
+4. [Running the Tool in LangGraph Studio](#running-the-tool-in-langgraph-studio)
 5. [Customization](#customization)
 6. [Future Directions](#future-directions)
 
+---
+
 ## Overview
 
-The Company Research Tool automates a **multi-stage workflow** for real-time company analysis. By integrating Tavily's `search` and `extract` capabilities with intelligent agents, this tool enables precise data collection, clustering, and curation of relevant information. It’s designed to be modular, making it easily adaptable to other research domains with minimal changes.
+The Company Researcher is built on **LangGraph** and **LangChain**, using a dynamic, graph-based structure to balance clarity and flexibility. The workflow integrates **Tavily’s `search` and `extract` capabilities** to gather both general and targeted information, using feedback loops and optional human validation for accuracy. It is designed to handle complex scenarios, such as distinguishing similarly named companies or gathering data in sparsely documented fields, and can be easily adapted to other research domains.
 
-This workflow leverages Tavily's deep extraction and search functionalities in combination to gather both general context and targeted information. By utilizing feedback loops and human-in-the-loop verification, it ensures robust and accurate outputs, even in cases with companies that share similar names.
+---
 
-## How It Works
+## Key Workflow Features
 
-1. **Ground Truth Establishment**: The workflow begins by creating a foundational understanding of the company using Tavily’s `extract` tool on the primary URL. This "ground truth" guides subsequent steps.
-2. **Sub-question Generation**: Based on the ground truth, targeted research questions are generated. These questions drive Tavily’s `search`, gathering focused, high-quality information.
-3. **Research and Clustering**: Relevant documents are collected using Tavily’s `search`, then clustered by relevance. This clustering process organizes the data, especially useful when dealing with companies that have similar names.
-4. **Human-in-the-Loop for Cluster Selection**: If clustering doesn’t yield an exact match to the target URL, manual review allows selection of the correct cluster to ensure accuracy.
-5. **Data Enrichment**: The selected cluster undergoes further Tavily extraction, enriching the data to enhance completeness and reliability.
-6. **Report Generation and Evaluation**: The curated data is used to generate a structured report, which is then evaluated for completeness. If gaps are found, a feedback loop prompts additional refinements.
-7. **Output in Multiple Formats**: The final report can be exported as either a PDF or Markdown file, based on user preference.
+1. **Establishing a Ground Truth with Tavily Extract**: Each session begins by setting a "ground truth" with Tavily's `extract` tool, using a user-provided company name and URL. This foundational data anchors the subsequent search, ensuring all steps stay within accurate and verified data boundaries.
+
+2. **Sub-Question Generation with Tavily Search**: The workflow dynamically generates specific research questions to drive Tavily's `search`, focusing the retrieval on relevant, high-value information rather than conducting broad, unfocused searches.
+
+3. **AI-Driven Document Clustering**: Retrieved documents are clustered based on relevance to the target company. This process, anchored by the ground truth, filters out unrelated content, a critical feature for similarly named companies or entities with minimal online presence.
+
+4. **Human-on-the-Loop Validation**: In cases where clustering yields ambiguous results, optional human review allows for manual adjustments, ensuring the data aligns accurately with the target entity.
+
+5. **Document Curation and Enrichment with Tavily Extract**: Once the appropriate cluster is identified, Tavily's `extract` further refines and enriches the content, adding depth and precision to the data.
+
+6. **Report Generation and Evaluation with Feedback Loops**: An LLM synthesizes the enriched data into a structured report. If gaps are detected, feedback loops prompt additional information gathering, enabling iterative improvements without restarting the entire workflow.
+
+7. **Multi-Format Output**: The finalized report can be exported in PDF or Markdown formats, making it ready for easy sharing and integration.
+
+---
 
 ## Getting Started
 
@@ -36,7 +47,6 @@ This workflow leverages Tavily's deep extraction and search functionalities in c
 - Python 3.11 or later: [Python Installation Guide](https://www.tutorialsteacher.com/python/install-python)
 - Tavily API Key - [Sign Up](https://tavily.com/)
 - OpenAI API Key - [Sign Up](https://platform.openai.com/)
-
 
 ### Installation
 
@@ -51,8 +61,8 @@ This workflow leverages Tavily's deep extraction and search functionalities in c
    Configure your OpenAI and Tavily API keys as environment variables or place them in a `.env` file:
 
    ```bash
-   export OPENAI_API_KEY={Your OpenAI API Key here}
    export TAVILY_API_KEY={Your Tavily API Key here}
+   export OPENAI_API_KEY={Your OpenAI API Key here}
    ```
 
 3. **Install Dependencies**:
@@ -61,50 +71,85 @@ This workflow leverages Tavily's deep extraction and search functionalities in c
    pip install -r requirements.txt
    ```
 
-4. **Run the app**
+4. **Run the Application**:
 
    ```bash
    python app.py
    ```
 
-5. **Open the app in your browser**
+5. **Open the App in Your Browser**:
+
    ```bash
    http://localhost:8000
    ```
 
-## Workflow Features
+---
 
-1. **User Input**: Define a **company name** and **URL** to initiate the research.
-2. **Ground Truth Establishment with Tavily Extract**: Sets a foundational "ground truth" with Tavily `extact` from the main domain, helping to filter relevant information.
-3. **Targeted Sub-question Generation**: Automatically generates sub-questions that guide Tavily’s `search` for specific, focused data.
-4. **AI-Driven Clustering**: Clusters documents by relevance, using AI to manage cases where companies may have similar names.
-5. **Human-in-the-Loop for Cluster Selection**: If clustering doesn’t produce a clear match, human intervention can select the appropriate cluster, ensuring data accuracy.
-6. **Content Curation and Enrichment**: Refines the chosen cluster and enriches documents using Tavily `extract` for additional extraction, adding depth to the final report.
-7. **Comprehensive Report Generation and Evaluation**: Builds a structured, detailed report with an evaluation step to ensure quality. Feedback loops allow refinement until completeness is achieved.
-8. **Flexible Output Formats**: Generates the final report in PDF or Markdown format, ready for distribution.
+## Running the Tool in LangGraph Studio
 
-## Workflow Diagram
+**LangGraph Studio** enables visualization, debugging, and real-time interaction with the Company Researcher's workflow. Here’s how to set it up:
 
-Below is a diagram of the workflow, showing Tavily’s `extract` and `search` usage at various stages, feedback loops, and human-in-the-loop features.
+![My application interface](langgraph_studio.png)
 
-![Workflow Diagram](path_to_workflow_diagram.png)
+### Prerequisites
+
+1. **Download LangGraph Studio**:
+   - For macOS, download the latest `.dmg` file for LangGraph Studio from [here](https://langgraph-studio.vercel.app/api/mac/latest) or visit the [releases page](https://github.com/langchain-ai/langgraph-studio/releases).
+   - **Note**: Currently, only macOS is supported; Windows and Linux support is expected soon.
+
+2. **Install Docker**:
+   - Ensure [Docker Desktop](https://docs.docker.com/engine/install/) is installed and running. LangGraph Studio requires Docker Compose version 2.22.0 or higher.
+
+### Setting Up in LangGraph Studio
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/danielleyahalom/company_researcher.git
+   cd company_researcher
+   ```
+   - **Note**: This repository includes all required files except for the `.env` file, which you need to create to store your API keys.
+
+2. **Configure the Environment**:
+   - Create a `.env` file in the root directory to store your API keys:
+     ```bash
+     touch .env
+     ```
+   - Add your API keys to the `.env` file:
+      ```bash
+      TAVILY_API_KEY={Your Tavily API Key here}
+      OPENAI_API_KEY={Your OpenAI API Key here}
+      ```
+
+3. **Ensure LangGraph Configuration Files Are in Place**:
+   - The repository includes `langgraph.json` and `langgraph_entry.py`, defining the entry point and configuration for LangGraph Studio.
+
+4. **Start LangGraph Studio**:
+   - Open LangGraph Studio and select the `company_researcher` directory from the dashboard.
+
+5. **Running the Workflow in Studio**:
+   - Visualize each step of the workflow, make real-time edits, and monitor the workflow’s state.
+   - **Important Note**: Due to a current bug in LangGraph Studio, human-in-the-loop interactions may not function as expected. If a cluster cannot be automatically selected, the tool will attempt to re-cluster instead.
+
+LangGraph Studio provides a hands-on approach to refining the workflow, enhancing both development efficiency and output reliability.
+
+---
 
 ## Customization
 
-This tool’s adaptable design enables it to serve various research applications. You can customize it in several ways:
+The tool’s modular structure makes it adaptable to various research applications:
 
-- **Modify Prompts**: Tailor prompts in the question generation or report generation stages to suit different research needs.
-- **Extend Workflow Nodes**: Add, remove, or adjust workflow nodes to focus on specific aspects of research or analysis.
-- **Adjust Output Formats**: Customize the styling or format (e.g., via CSS for PDF styling) to match organizational needs.
+- **Modify Prompts**: Adjust prompts in question generation or report synthesis for different research needs.
+- **Extend Workflow Nodes**: Add, remove, or modify nodes to focus on specific types of analysis.
+- **Customize Output Formats**: Tailor output formats (e.g., CSS for PDF styling) to suit organizational standards.
 
+---
 
 ## Future Directions
 
-This project provides a flexible foundation for a wide range of research applications. By adjusting prompts and parameters, you can adapt it to suit different fields and needs. 
-Potential applications include:
+This adaptable workflow can be fine-tuned for a range of applications beyond company research:
 
-- **Market Analysis**: Adapt the workflow to analyze industry trends, competitive landscapes, or emerging technologies.
-- **Lead Generation**: Use the tool to gather detailed profiles on prospective clients, identifying critical insights for business development.
-- **Customizable Knowledge Bases**: Build ongoing research repositories for fields like law, finance, or medicine by continuously updating with new findings.
+- **Market Analysis**: Apply the workflow to track trends, competitors, and emerging tech.
+- **Lead Generation**: Compile detailed profiles on potential clients for targeted outreach.
+- **Ongoing Knowledge Bases**: Build continuously updated research repositories in fields like law, finance, or healthcare.
 
-The adaptable structure of this workflow allows it to be tailored to any domain that requires structured, high-quality information gathering. As AI agents continue to evolve, this tool demonstrates how intelligent workflows, combined with robust data retrieval methods like Tavily’s `extract` and `search`, can revolutionize research and analysis across industries. 
+This tool exemplifies how AI-driven workflows, backed by precise data extraction and real-time search, can reshape research and analysis across domains.
