@@ -40,7 +40,6 @@ class SubQuestionsNode:
             # Use LLM to generate sub-questions
             messages = [SystemMessage(content=prompt)]
             sub_questions = await model.with_structured_output(TavilySearchInput).ainvoke(messages)
-            msg += f"Generated {len(sub_questions.sub_queries)} sub-questions.\n"
         except Exception as e:
             msg = f"An error occurred during sub-question generation: {str(e)}"
         

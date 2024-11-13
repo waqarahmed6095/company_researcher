@@ -13,7 +13,7 @@ class EnrichDocsNode:
         chosen_cluster_index = state['chosen_cluster']
         clusters = state['document_clusters']
         chosen_cluster = clusters[chosen_cluster_index]
-        msg = f"Curating and enhancing documents for selected cluster '{chosen_cluster.company_name}'...\n"
+        msg = f"Enriching documents for selected cluster '{chosen_cluster.company_name}'...\n"
 
         # Filter `documents` to include only those in the chosen cluster
         selected_docs = {url: state['documents'][url] for url in chosen_cluster.cluster if url in state['documents']}
@@ -35,7 +35,6 @@ class EnrichDocsNode:
                         "raw_content": item.get("raw_content", ""),
                         "extracted_details": item.get("details", {}),
                     }
-                    msg += f"Enhanced content extracted for URL: {url}\n"
             
             state['documents'] = enriched_docs  # Update documents with enriched data
 

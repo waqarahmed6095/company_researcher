@@ -17,7 +17,7 @@ class ClusterNode:
         initial_docs = state['initial_documents']
         documents = state.get('documents', {})
         
-        msg = "Initiating clustering process to separate documents by associated company...\n"
+        msg = "Initiating clustering process...\n"
 
         # Extract compnay domain from URL
         target_domain = company_url.split("//")[-1].split("/")[0]
@@ -94,7 +94,7 @@ class ClusterNode:
         else:
             msg += "Clusters generated successfully:\n"
             for  idx, cluster in enumerate(clusters, start=1):
-                msg += f"Company {idx}: {cluster.company_name} - URLs: {cluster.cluster}\n"
+                msg += f"Company {idx}: {cluster.company_name}\n"
         
         return {"messages": [AIMessage(content=msg)], "document_clusters": clusters}
     
@@ -102,7 +102,7 @@ class ClusterNode:
     async def choose_cluster(self, state: ResearchState):
         company_url = state['company_url']
         clusters = state['document_clusters']
-     
+
         # Attempt to automatically choose the correct cluster
         for index,cluster in enumerate(clusters):
             # Check if any URL in the cluster starts with the company URL
