@@ -3,10 +3,12 @@ let ws;
 function startResearch() {
     const progressDiv = document.getElementById("progress");
     const clusterSelectionDiv = document.getElementById("cluster-selection");
+    const reportDiv = document.getElementById("report");
 
-    // Clear previous progress messages and reset UI elements
-    progressDiv.innerHTML = "";  
-    clusterSelectionDiv.style.display = "none";  
+    // Clear previous content
+    progressDiv.innerHTML = "";
+    reportDiv.innerHTML = "";
+    clusterSelectionDiv.style.display = "none";
 
     // Open WebSocket connection
     ws = new WebSocket("ws://127.0.0.1:8000/ws");
@@ -14,18 +16,25 @@ function startResearch() {
     ws.onmessage = function(event) {
         const message = event.data;
 
-        // Show cluster input only for manual selection prompt
         if (message.includes("Please review the options and select the correct cluster")) {
-            clusterSelectionDiv.style.display = "flex"; 
+            clusterSelectionDiv.style.display = "block";
         }
 
-        // Create a new message element and add it to the progress section
-        const messageElement = document.createElement("p");
-        messageElement.innerText = message;
+        // Create message element with specific styling
+        const messageElement = document.createElement("div");
+        messageElement.className = "progress-message";
+        messageElement.textContent = message;
         progressDiv.appendChild(messageElement);
 
-        // Auto-scroll to the latest message
-        progressDiv.scrollTop = progressDiv.scrollHeight;
+        // Ensure automatic scrolling to the latest message
+        requestAnimationFrame(() => {
+            progressDiv.scrollTop = progressDiv.scrollHeight;
+        });
+
+        // Handle final report
+        if (message.startsWith("Generated Report:")) {
+            reportDiv.textContent = message.replace("Generated Report:", "").trim();
+        }
     };
 
     ws.onopen = function() {
@@ -36,21 +45,28 @@ function startResearch() {
     };
 
     ws.onclose = function() {
-        const message = document.createElement("p");
-        message.innerText = "Process Finished";
-        progressDiv.appendChild(message);
-
-        // Ensure auto-scroll on close message
+        const messageElement = document.createElement("div");
+        messageElement.className = "progress-message";
+        messageElement.textContent = "Process Finished";
+        progressDiv.appendChild(messageElement);
         progressDiv.scrollTop = progressDiv.scrollHeight;
     };
 
     ws.onerror = function(error) {
-        console.error("WebSocket error:", error);
+        const messageElement = document.createElement("div");
+        messageElement.className = "progress-message";
+        messageElement.textContent = "Error: " + error.message;
+        messageElement.style.borderLeftColor = "#FE363B"; // Red border for errors
+        progressDiv.appendChild(messageElement);
+        progressDiv.scrollTop = progressDiv.scrollHeight;
     };
 }
 
 function submitClusterSelection() {
     const clusterSelection = document.getElementById("cluster-input").value;
-    ws.send(clusterSelection);
-    document.getElementById("cluster-selection").style.display = "none";  
+    if (ws && clusterSelection) {
+        ws.send(clusterSelection);
+        document.getElementById("cluster-selection").style.display = "none";
+        document.getElementById("cluster-input").value = "";
+    }
 }
