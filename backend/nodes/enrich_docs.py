@@ -2,7 +2,7 @@ from langchain_core.messages import AIMessage
 from ..utils.utils import tavily_client
 from ..format_classes import ResearchState
 
-class CurateNode:
+class EnrichDocsNode:
     """
     Curates documents based on the selected cluster stored in `chosen_cluster`,
     then enriches the content with Tavily Extract for more detailed information.

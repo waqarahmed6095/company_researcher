@@ -10,12 +10,12 @@ from backend.format_classes.research_state import ResearchState, InputState, Out
 
 # Import node classes
 from backend.nodes import (
-    InitialSearchNode, 
+    InitialGroundingNode, 
     SubQuestionsNode, 
     ResearcherNode, 
     ClusterNode, 
     ManualSelectionNode, 
-    CurateNode, 
+    EnrichDocsNode, 
     GenerateNode,
     EvaluationNode,
     PublishNode
@@ -42,12 +42,12 @@ class Graph:
             messages=self.messages
         )
         # Initialize nodes as attributes
-        self.initial_search_node = InitialSearchNode()
+        self.initial_search_node = InitialGroundingNode()
         self.sub_questions_node = SubQuestionsNode()
         self.researcher_node = ResearcherNode()
         self.cluster_node = ClusterNode()
         self.manual_selection_node = ManualSelectionNode()  # Now an attribute
-        self.curate_node = CurateNode()
+        self.curate_node = EnrichDocsNode()
         self.generate_node = GenerateNode()
         self.evaluation_node = EvaluationNode()
         self.publish_node = PublishNode()
@@ -56,29 +56,29 @@ class Graph:
         self.workflow = StateGraph(ResearchState, input=InputState, output=OutputState)
 
         # Add nodes to the workflow
-        self.workflow.add_node("initial_search", self.initial_search_node.run)
+        self.workflow.add_node("initial_grounding", self.initial_search_node.run)
         self.workflow.add_node("sub_questions_gen", self.sub_questions_node.run)
         self.workflow.add_node("research", self.researcher_node.run)
         self.workflow.add_node("cluster", self.cluster_node.run)
         self.workflow.add_node("manual_cluster_selection", partial(self.manual_selection_node.run, websocket=websocket))
-        self.workflow.add_node("curate", self.curate_node.run)
+        self.workflow.add_node("enrich_docs", self.curate_node.run)
         self.workflow.add_node("generate_report", self.generate_node.run)
         self.workflow.add_node("eval_report", self.evaluation_node.run)
         self.workflow.add_node("publish", self.publish_node.run)
         
         # Add edges to graph
-        self.workflow.add_edge("initial_search", "sub_questions_gen")
+        self.workflow.add_edge("initial_grounding", "sub_questions_gen")
         self.workflow.add_edge("sub_questions_gen", "research")
         self.workflow.add_edge("research", "cluster")
 
         self.workflow.add_conditional_edges("cluster", route_based_on_cluster)
         self.workflow.add_conditional_edges("manual_cluster_selection", route_after_manual_selection)
-        self.workflow.add_conditional_edges("curate", should_continue_research)
+        self.workflow.add_conditional_edges("enrich_docs", should_continue_research)
         self.workflow.add_edge("generate_report", "eval_report")
         self.workflow.add_conditional_edges("eval_report", route_based_on_evaluation)
 
         # Set start and end nodes
-        self.workflow.set_entry_point("initial_search")
+        self.workflow.set_entry_point("initial_grounding")
         self.workflow.set_finish_point("publish")
 
         # Set up memory

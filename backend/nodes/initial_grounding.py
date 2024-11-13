@@ -3,12 +3,12 @@ from ..utils.utils import tavily_client
 from ..format_classes import ResearchState
 
 
-class InitialSearchNode:
+class InitialGroundingNode:
     def __init__(self) -> None:
         pass
     # Use Tavily Extract to get base content from provided company URL
     async def initial_search(self, state: ResearchState):
-        msg = f"Initiating initial search for company: {state['company']} using URL: {state['company_url']}.\n"
+        msg = f"Initiating initial grounding for company: {state['company']} using URL: {state['company_url']}.\n"
 
         urls = []
         urls.append(state['company_url'])

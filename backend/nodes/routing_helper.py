@@ -1,14 +1,14 @@
 from typing import Literal
 from ..format_classes import ResearchState
 
-def route_based_on_cluster(state: ResearchState) -> Literal["curate", "manual_cluster_selection"]:
+def route_based_on_cluster(state: ResearchState) -> Literal["enrich_docs", "manual_cluster_selection"]:
     if state.get('chosen_cluster') is not None:
-        return "curate"
+        return "enrich_docs"
     return "manual_cluster_selection"
 
-def route_after_manual_selection(state: ResearchState) -> Literal["curate", "cluster"]:
+def route_after_manual_selection(state: ResearchState) -> Literal["enrich_docs", "cluster"]:
     if state.get('chosen_cluster') >= 0:
-        return "curate"
+        return "enrich_docs"
     return "cluster"
 
 def should_continue_research(state: ResearchState) -> Literal["research", "generate_report"]:
