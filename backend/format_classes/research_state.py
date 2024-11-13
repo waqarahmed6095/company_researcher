@@ -22,4 +22,12 @@ class ResearchState(TypedDict):
     output_format: str
     save_report: str
     messages: Annotated[list[AnyMessage], add_messages]
-    
+
+class InputState(TypedDict):
+    company: str
+    company_url: str
+    # messages: Annotated[list[AnyMessage], add_messages]
+
+
+class OutputState(TypedDict):
+    report: str

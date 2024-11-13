@@ -3,9 +3,10 @@ import os
 from langchain_core.messages import SystemMessage
 from functools import partial
 from langgraph.graph import StateGraph
+from langgraph.checkpoint.memory import MemorySaver
 
 # Import research state class
-from backend.format_classes.research_state import ResearchState
+from backend.format_classes.research_state import ResearchState, InputState, OutputState
 
 # Import node classes
 from backend.nodes import (
@@ -52,7 +53,7 @@ class Graph:
         self.publish_node = PublishNode()
 
         # Initialize workflow for the graph
-        self.workflow = StateGraph(ResearchState)
+        self.workflow = StateGraph(ResearchState, input=InputState, output=OutputState)
 
         # Add nodes to the workflow
         self.workflow.add_node("initial_search", self.initial_search_node.run)
@@ -80,21 +81,33 @@ class Graph:
         self.workflow.set_entry_point("initial_search")
         self.workflow.set_finish_point("publish")
 
+        # Set up memory
+        self.memory = MemorySaver()
+
 
     async def run(self, progress_callback=None):
         
         # Compile the graph
-        graph = self.workflow.compile()
+        graph = self.workflow.compile(checkpointer=self.memory)
+        thread = {"configurable": {"thread_id": "2"}}
+
        
         # Execute the graph asynchronously and send progress updates
-        async for s in graph.astream(self.state, stream_mode="values"):
-            message = s["messages"][-1]
-            output_message = message.content if hasattr(message, "content") else str(message)
+        async for s in graph.astream(self.state, thread, stream_mode="values"):
+            if "messages" in s and s["messages"]:  # Check if "messages" exists and is non-empty
+                message = s["messages"][-1]
+                output_message = message.content if hasattr(message, "content") else str(message)
 
-            if progress_callback and not getattr(message, "is_manual_selection", False):
-                await progress_callback(output_message)
+                if progress_callback and not getattr(message, "is_manual_selection", False):
+                    await progress_callback(output_message)
 
     def compile(self):
-    # compile the graph and return it (for LangGraph Studio)
-        graph = self.workflow.compile(interrupt_before=["manual_cluster_selection"])
+    # Use a consistent thread ID for state persistence
+        thread = {"configurable": {"thread_id": "2"}}
+        
+        # Compile the workflow with checkpointer and interrupt configuration
+        graph = self.workflow.compile(
+            checkpointer=self.memory
+            # interrupt_before=["manual_cluster_selection"]
+        )
         return graph
