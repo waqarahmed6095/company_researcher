@@ -1,7 +1,6 @@
+# Company Researcher with Tavily and Langgraph
 
-# Company Researcher with Tavily and AI Agents
-
-The **Company Researcher** is an open-source tool designed for in-depth company analysis. Built with **Tavily’s `search` and `extract` capabilities** and powered by **LangGraph**, it delivers accurate, real-time insights in a structured, modular workflow. Ideal for competitive intelligence, lead generation, and Go-to-Market (GTM) strategies, this tool leverages advanced AI-driven workflows to provide comprehensive, reliable reports for data-driven decision-making.
+The **Company Researcher** is an open-source tool designed for in-depth company analysis. Built with **Tavily’s `search` and `extract` capabilities** and powered by **LangGraph**, it delivers percise, real-time insights in a structured format. Ideal for competitive intelligence, lead research, and Go-to-Market (GTM) strategies, this tool leverages advanced AI-driven workflows to provide comprehensive, reliable reports for data-driven decision-making.
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -23,19 +22,12 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 ---
 
 ## Key Workflow Features
-
-1. **Establishing a Ground Truth with Tavily Extract**: Each session begins by setting a "ground truth" with Tavily's `extract` tool, using a user-provided company name and URL. This foundational data anchors the subsequent search, ensuring all steps stay within accurate and verified data boundaries.
-
-2. **Sub-Question Generation with Tavily Search**: The workflow dynamically generates specific research questions to drive Tavily's `search`, focusing the retrieval on relevant, high-value information rather than conducting broad, unfocused searches.
-
+1. **Establishing a Ground Truth with Tavily Extract**: Each session begins by setting a “ground truth” with Tavily’s `extract` tool, using a user-provided company name and URL. This foundational data anchors the subsequent search, ensuring all steps stay within accurate and verified data boundaries.
+2. **Sub-Question Generation and Tavily Search**: The workflow dynamically generates specific research questions to drive Tavily’s `search`, focusing the retrieval on relevant, high-value information rather than conducting broad, unfocused searches.
 3. **AI-Driven Document Clustering**: Retrieved documents are clustered based on relevance to the target company. This process, anchored by the ground truth, filters out unrelated content, a critical feature for similarly named companies or entities with minimal online presence.
-
-4. **Human-on-the-Loop Validation**: In cases where clustering yields ambiguous results, optional human review allows for manual adjustments, ensuring the data aligns accurately with the target entity.
-
-5. **Document Curation and Enrichment with Tavily Extract**: Once the appropriate cluster is identified, Tavily's `extract` further refines and enriches the content, adding depth and precision to the data.
-
+4. **Human-on-the-Loop Validation**: In cases where clustering yields ambiguous results, optional human review allows for manual cluster selection, ensuring the data aligns accurately with the target entity.
+5. **Document Curation and Enrichment with Tavily Extract**: Once the appropriate cluster is identified, Tavily’s `extract` further refines and enriches the content, adding substantial depth to the research. This step enhances the precision and comprehensiveness of the final output.
 6. **Report Generation and Evaluation with Feedback Loops**: An LLM synthesizes the enriched data into a structured report. If gaps are detected, feedback loops prompt additional information gathering, enabling iterative improvements without restarting the entire workflow.
-
 7. **Multi-Format Output**: The finalized report can be exported in PDF or Markdown formats, making it ready for easy sharing and integration.
 
 ---
