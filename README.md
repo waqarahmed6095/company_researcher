@@ -130,7 +130,7 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 
 5. **Running the Workflow in Studio**:
    - Visualize each step of the workflow, make real-time edits, and monitor the workflow’s state.
-   - **Important Note**: Due to a current bug in LangGraph Studio, human-in-the-loop interactions may not function as expected. If a cluster cannot be automatically selected, the tool will attempt to re-cluster instead.
+   - **Important Note**: Due to a current bug, human-in-the-loop interactions may not function as expected. If a cluster cannot be automatically selected, the tool will attempt to re-cluster instead.
 
 LangGraph Studio provides a hands-on approach to refining the workflow, enhancing both development efficiency and output reliability.
 
