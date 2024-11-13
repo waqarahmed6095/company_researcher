@@ -87,17 +87,17 @@ The Company Researcher is built on **LangGraph** and **LangChain**, using a dyna
 
 ## Running the Tool in LangGraph Studio
 
-**LangGraph Studio** enables visualization, debugging, and real-time interaction with the Company Researcher's workflow. Here’s how to set it up:
-
 <div align="center">
   <img src="/diagrams/langgraph_studio.png" alt="Langgraph Studio" height="500">
 </div>
+
+**LangGraph Studio** enables visualization, debugging, and real-time interaction with the Company Researcher's workflow. Here’s how to set it up:
 
 ### Prerequisites
 
 1. **Download LangGraph Studio**:
    - For macOS, download the latest `.dmg` file for LangGraph Studio from [here](https://langgraph-studio.vercel.app/api/mac/latest) or visit the [releases page](https://github.com/langchain-ai/langgraph-studio/releases).
-   - **Note**: Currently, only macOS is supported; Windows and Linux support is expected soon.
+   - **Note**: Currently, only macOS is supported.
 
 2. **Install Docker**:
    - Ensure [Docker Desktop](https://docs.docker.com/engine/install/) is installed and running. LangGraph Studio requires Docker Compose version 2.22.0 or higher.
