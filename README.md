@@ -5,11 +5,11 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 
 ## Table of Contents
 1. [Overview](#overview)
-2. [Getting Started](#getting-started)
+2. [Key Workflow Features](#key-workflow-features)
+3. [Running the Tool Locally](#running-the-tool-locally)
    - [Prerequisites](#prerequisites)
    - [Installation](#installation)
    - [Running the Application](#running-the-application)
-3. [Key Workflow Features](#key-workflow-features)
 4. [Running the Tool in LangGraph Studio](#running-the-tool-in-langgraph-studio)
 5. [Customization](#customization)
 6. [Future Directions](#future-directions)
@@ -18,7 +18,7 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 
 ## Overview
 
-The Company Researcher is built on **LangGraph** and **LangChain**, using a dynamic, graph-based structure to balance clarity and flexibility. The workflow integrates **Tavily’s `search` and `extract` capabilities** to gather both general and targeted information, using feedback loops and optional human validation for accuracy. It is designed to handle complex scenarios, such as distinguishing similarly named companies or gathering data in sparsely documented fields, and can be easily adapted to other research domains.
+The **Company Researcher** is an open-source tool designed for in-depth company analysis. Built with **Tavily’s search and extract capabilities** and powered by **LangGraph**, it gathers both general and targeted information, using feedback loops and optional human validation for accuracy. It is designed to handle complex scenarios, such as distinguishing similarly named companies or gathering data in sparsely documented fields, and can be easily adapted to other research domains.
 
 ---
 
@@ -40,7 +40,7 @@ The Company Researcher is built on **LangGraph** and **LangChain**, using a dyna
 
 ---
 
-## Getting Started
+## Running the Tool Locally
 
 ### Prerequisites
 
