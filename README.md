@@ -89,7 +89,7 @@ The Company Researcher is built on **LangGraph** and **LangChain**, using a dyna
 
 **LangGraph Studio** enables visualization, debugging, and real-time interaction with the Company Researcher's workflow. Here’s how to set it up:
 
-![My application interface](langgraph_studio.png)
+![Langgraph Studio](langgraph_studio.png)
 
 ### Prerequisites
 
