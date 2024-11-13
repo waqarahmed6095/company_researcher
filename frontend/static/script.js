@@ -20,21 +20,31 @@ function startResearch() {
             clusterSelectionDiv.style.display = "block";
         }
 
-        // Create message element with specific styling
-        const messageElement = document.createElement("div");
-        messageElement.className = "progress-message";
-        messageElement.textContent = message;
-        progressDiv.appendChild(messageElement);
+        // Handle final report differently
+        if (message.startsWith("Generated Report:")) {
+            // Add just "Generated Report" to progress
+            const messageElement = document.createElement("div");
+            messageElement.className = "progress-message";
+            messageElement.textContent = "Generated Report";
+            progressDiv.appendChild(messageElement);
+            
+            // Add full report content to report section
+            reportDiv.innerText = message.replace("Generated Report:", "").trim();
+            requestAnimationFrame(() => {
+                reportDiv.scrollTop = reportDiv.scrollHeight;
+            });
+        } else {
+            // Create message element with specific styling for all other messages
+            const messageElement = document.createElement("div");
+            messageElement.className = "progress-message";
+            messageElement.textContent = message;
+            progressDiv.appendChild(messageElement);
+        }
 
         // Ensure automatic scrolling to the latest message
         requestAnimationFrame(() => {
             progressDiv.scrollTop = progressDiv.scrollHeight;
         });
-
-        // Handle final report
-        if (message.startsWith("Generated Report:")) {
-            reportDiv.textContent = message.replace("Generated Report:", "").trim();
-        }
     };
 
     ws.onopen = function() {
@@ -44,13 +54,13 @@ function startResearch() {
         ws.send(JSON.stringify({ companyName, companyUrl, outputFormat }));
     };
 
-    ws.onclose = function() {
-        const messageElement = document.createElement("div");
-        messageElement.className = "progress-message";
-        messageElement.textContent = "Process Finished";
-        progressDiv.appendChild(messageElement);
-        progressDiv.scrollTop = progressDiv.scrollHeight;
-    };
+    // ws.onclose = function() {
+    //     const messageElement = document.createElement("div");
+    //     messageElement.className = "progress-message";
+    //     messageElement.textContent = "Process Finished";
+    //     progressDiv.appendChild(messageElement);
+    //     progressDiv.scrollTop = progressDiv.scrollHeight;
+    // };
 
     ws.onerror = function(error) {
         const messageElement = document.createElement("div");
