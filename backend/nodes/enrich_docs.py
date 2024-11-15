@@ -18,8 +18,8 @@ class EnrichDocsNode:
         # Filter `documents` to include only those in the chosen cluster
         selected_docs = {url: state['documents'][url] for url in chosen_cluster.cluster if url in state['documents']}
 
-        # Limit to first 20 URLs 
-        urls_to_extract = list(selected_docs.keys())[:20]
+        # Limit to first 15 URLs 
+        urls_to_extract = list(selected_docs.keys())[:15]
         
         # Enrich the content using Tavily Extract
         try:
@@ -40,6 +40,7 @@ class EnrichDocsNode:
 
         except Exception as e:
             msg += f"Error occurred during Tavily Extract: {str(e)}\n"
+            msg += f"Extracted URLs: {urls_to_extract}\n"  # Log the urls_to_extract
 
         return {"messages": [AIMessage(content=msg)], "documents": state['documents']}
     
