@@ -1,9 +1,8 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request  # Import Request here
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request 
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
-import markdown2  # Import markdown2 to render markdown to HTML
 from backend.graph import Graph  # Adjust this import if necessary 
 
 from dotenv import load_dotenv

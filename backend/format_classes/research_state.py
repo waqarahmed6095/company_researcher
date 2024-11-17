@@ -1,4 +1,4 @@
-from langgraph.graph import StateGraph, add_messages
+from langgraph.graph import add_messages
 from langchain_core.messages import AnyMessage
 from . import TavilySearchInput, DocumentCluster, ReportEvaluation
 from typing import TypedDict, List, Annotated, Dict, Union
@@ -24,7 +24,6 @@ class ResearchState(TypedDict):
 class InputState(TypedDict):
     company: str
     company_url: str
-    # messages: Annotated[list[AnyMessage], add_messages]
 
 
 class OutputState(TypedDict):
