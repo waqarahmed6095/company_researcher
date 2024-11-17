@@ -1,4 +1,4 @@
-from langchain_core.messages import AIMessage, SystemMessage
+from langchain_core.messages import AIMessage
 from ..format_classes import ResearchState, TavilySearchInput, TavilyQuery, ReportEvaluation
 from langchain_anthropic import ChatAnthropic
 

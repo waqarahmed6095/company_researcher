@@ -38,7 +38,7 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 
 - Python 3.11 or later: [Python Installation Guide](https://www.tutorialsteacher.com/python/install-python)
 - Tavily API Key - [Sign Up](https://tavily.com/)
-- OpenAI API Key - [Sign Up](https://platform.openai.com/)
+- Anthropic API Key - [Sign Up](https://console.anthropic.com/settings/keys)
 
 ### Installation
 
@@ -54,7 +54,7 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 
    ```bash
    export TAVILY_API_KEY={Your Tavily API Key here}
-   export OPENAI_API_KEY={Your OpenAI API Key here}
+   export ANTHROPIC_API_KEY={Your Anthropic API Key here}
    ```
 
 3. **Install Dependencies**:
@@ -122,7 +122,7 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 
 5. **Running the Workflow in Studio**:
    - Visualize each step of the workflow, make real-time edits, and monitor the workflow’s state.
-   - **Important Note**: Due to a current bug, human-in-the-loop interactions may not function as expected. If a cluster cannot be automatically selected, the tool will attempt to re-cluster instead.
+   - **Important Note**: If a cluster cannot be automatically selected, the tool will attempt to re-cluster instead.
 
 LangGraph Studio provides a hands-on approach to refining the workflow, enhancing both development efficiency and output reliability.
 
