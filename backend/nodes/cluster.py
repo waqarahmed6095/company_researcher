@@ -1,29 +1,37 @@
-from langchain_core.messages import AIMessage, SystemMessage
-import asyncio
-from datetime import datetime
-from typing import List, Literal
+from langchain_core.messages import AIMessage
+from langchain_anthropic import ChatAnthropic
 
 from ..format_classes import ResearchState,DocumentClusters
-from ..utils.utils import final_model
 
 
 class ClusterNode:
     def __init__(self):
-        pass
+        self.model = ChatAnthropic(
+            model="claude-3-5-sonnet-20240620",
+            temperature=0
+        )
 
     async def cluster(self, state: ResearchState):
         company = state['company']
         company_url = state['company_url']
         initial_docs = state['initial_documents']
         documents = state.get('documents', {})
-        
-        msg = "Initiating clustering process...\n"
-
+   
         # Extract compnay domain from URL
         target_domain = company_url.split("//")[-1].split("/")[0]
 
         # Collect all retrieved documents without duplicates
-        all_retrieved_urls = [{'url': url, 'content': doc.get('content', '')} for url, doc in documents.items()]
+        unique_urls = []
+        seen_urls = set()
+        for url, doc, in documents.items():
+            if url not in seen_urls:
+                unique_urls.append({'url': url, 'content': doc.get('content', '')})
+                seen_urls.add(url)
+
+        # all_retrieved_urls = [{'url': url, 'content': doc.get('content', '')} for url, doc in documents.items()]
+        
+        # Pass in the first 20 URLs
+        urls = unique_urls[:20]
 
         # LLM prompt to categorize documents accurately
         prompt = f"""
@@ -38,7 +46,7 @@ class ClusterNode:
 
             ### Retrieved Documents for Clustering
             Below are the retrieved documents, including URLs and brief content snippets:
-            {[{'url': doc['url'], 'snippet': doc['content']} for doc in all_retrieved_urls]}
+            {[{'url': doc['url'], 'snippet': doc['content']} for doc in urls]}
 
             ### Clustering Instructions
             - **Primary Domain Priority**: Documents with URLs containing '{target_domain}' should be prioritized for the main cluster for '{company}'.
@@ -77,14 +85,17 @@ class ClusterNode:
         """
 
         # LLM call with structured output using DocumentClusters
-        messages = [SystemMessage(content=prompt)]
+        messages = ["system","Your job is to generate clusters for the company: '{company}'.\n",
+                ("human",f"{prompt}")]
         
+        msg = ""
         try:
             # Use the model's structured output with DocumentClusters format
-            response = await final_model.with_structured_output(DocumentClusters).ainvoke(messages)
+            response = await self.model.with_structured_output(DocumentClusters).ainvoke(messages)
             clusters = response.clusters  # Access the structured clusters directly
+      
         except Exception as e:
-            msg += f"Error: {str(e)}\n"
+            msg = f"Error: {str(e)}\n"
             clusters = []
 
 
@@ -93,8 +104,14 @@ class ClusterNode:
             msg += "No valid clusters generated. Please check the document formats.\n"
         else:
             msg += "Clusters generated successfully:\n"
+            urls = set()
             for  idx, cluster in enumerate(clusters, start=1):
-                msg += f"Company {idx}: {cluster.company_name}\n"
+                msg += f"   📂 Company {idx}: {cluster.company_name}\n"
+                for url in cluster.cluster:
+                    domain = url.split("://")[-1].split("/")[0]
+                    if domain not in urls:
+                        urls.add(domain)
+                        msg += f"       📄 {domain}\n"
         
         return {"messages": [AIMessage(content=msg)], "document_clusters": clusters}
     
@@ -102,6 +119,9 @@ class ClusterNode:
     async def choose_cluster(self, state: ResearchState):
         company_url = state['company_url']
         clusters = state['document_clusters']
+
+        msg = "No automatic cluster match found. Please select the correct cluster manually."
+        return {"messages": [AIMessage(content=msg)], "document_clusters": clusters, "chosen_cluster": None}
 
         # Attempt to automatically choose the correct cluster
         for index,cluster in enumerate(clusters):

@@ -1,6 +1,9 @@
 from typing import Literal
 from ..format_classes import ResearchState
 
+from langchain_core.messages import AIMessage
+
+
 def route_based_on_cluster(state: ResearchState) -> Literal["enrich_docs", "manual_cluster_selection"]:
     if state.get('chosen_cluster') is not None:
         return "enrich_docs"

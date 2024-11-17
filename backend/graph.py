@@ -1,6 +1,6 @@
 # In graph.py
 import os
-from langchain_core.messages import SystemMessage
+from langchain_core.messages import SystemMessage, AIMessage
 from functools import partial
 from langgraph.graph import StateGraph
 from langgraph.checkpoint.memory import MemorySaver
@@ -20,7 +20,7 @@ from backend.nodes import (
     EvaluationNode,
     PublishNode
 )
-from backend.nodes.routing_helper import (
+from backend.utils.routing_helper import (
     route_based_on_cluster, 
     route_after_manual_selection, 
     should_continue_research,
@@ -65,11 +65,15 @@ class Graph:
         self.workflow.add_node("generate_report", self.generate_node.run)
         self.workflow.add_node("eval_report", self.evaluation_node.run)
         self.workflow.add_node("publish", self.publish_node.run)
+
+        self.workflow.add_node("clustering_message", 
+            lambda _: {"messages": [AIMessage(content="Starting the clustering process...")]})
         
         # Add edges to graph
         self.workflow.add_edge("initial_grounding", "sub_questions_gen")
         self.workflow.add_edge("sub_questions_gen", "research")
-        self.workflow.add_edge("research", "cluster")
+        self.workflow.add_edge("research", "clustering_message")
+        self.workflow.add_edge("clustering_message", "cluster")
 
         self.workflow.add_conditional_edges("cluster", route_based_on_cluster)
         self.workflow.add_conditional_edges("manual_cluster_selection", route_after_manual_selection)
@@ -84,7 +88,7 @@ class Graph:
         # Set up memory
         self.memory = MemorySaver()
 
-
+    
     async def run(self, progress_callback=None):
         
         # Compile the graph

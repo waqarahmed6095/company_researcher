@@ -1,15 +1,17 @@
 from langchain_core.messages import AIMessage, SystemMessage
+from tavily import AsyncTavilyClient
+import os
 import asyncio
 from datetime import datetime
 from typing import List
 
 
-from ..format_classes import ResearchState, TavilySearchInput, TavilyQuery
-from ..utils.utils import tavily_client
+from ..format_classes import ResearchState, TavilyQuery
 
 class ResearcherNode():
-    def __init__(self) -> None:
-        pass
+    def __init__(self):
+        self.tavily_client = AsyncTavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
+
 
     async def tavily_search(self, sub_queries: List[TavilyQuery]):
         """Perform searches for each sub-query using the Tavily search tool concurrently."""  
@@ -19,7 +21,7 @@ class ResearcherNode():
                 # Add date to the query as we need the most recent results
                 query_with_date = f"{itm.query} {datetime.now().strftime('%m-%Y')}"
                 # Attempt to perform the search, hardcoding days to 7 (days will be used only when topic is news)
-                response = await tavily_client.search(query=query_with_date, topic="general", days=itm.days, max_results=10)
+                response = await self.tavily_client.search(query=query_with_date, topic="general", max_results=5)
                 return response['results']
             except Exception as e:
                 # Handle any exceptions, log them, and return an empty list
@@ -42,7 +44,7 @@ class ResearcherNode():
         """
         Conducts a Tavily Search and stores all documents in a unified 'documents' attribute.
         """
-        msg = "Conducting Tavily Search for the specified company...\n"
+        msg = "🚀 Conducting Tavily Search for the specified company...\n"
         state['documents'] = {}  # Initialize documents if not already present
 
         research_node = ResearcherNode()
@@ -50,7 +52,6 @@ class ResearcherNode():
         response = await research_node.tavily_search(state['sub_questions'].sub_queries)
 
         # Process each set of search results and add to documents
-
         for doc in response:
             url = doc.get('url')
             if url and url not in state['documents']:  # Avoid duplicates

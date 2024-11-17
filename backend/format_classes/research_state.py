@@ -4,9 +4,7 @@ from . import TavilySearchInput, DocumentCluster, ReportEvaluation
 from typing import TypedDict, List, Annotated, Dict, Union
 
 # Import directly from each specific module within format_classes
-from .query import TavilySearchInput
-from .cluster import DocumentCluster
-from .eval import ReportEvaluation
+from .classes import TavilySearchInput, DocumentCluster, ReportEvaluation
 
 # Define the research state
 class ResearchState(TypedDict):

@@ -1,11 +1,14 @@
 from langchain_core.messages import AIMessage, SystemMessage
 from ..format_classes import ResearchState, TavilySearchInput, TavilyQuery, ReportEvaluation
-from ..utils.utils import model
+from langchain_anthropic import ChatAnthropic
 
 
 class EvaluationNode:
     def __init__(self):
-        pass
+        self.model = ChatAnthropic(
+            model="claude-3-5-sonnet-20240620",
+            temperature=0
+        )
 
     # Evaluation function assigns an overall grade from 1 to 3.
     async def evaluate_report(self, state: ResearchState):
@@ -27,8 +30,10 @@ class EvaluationNode:
         """
 
         # Invoke the model for report evaluation
-        messages = [SystemMessage(content=prompt)]
-        evaluation = await model.with_structured_output(ReportEvaluation).ainvoke(messages)
+
+        messages = ["system","Your task is to evaluate a report on a scale of 1 to 3.",
+                ("human",f"{prompt}")]
+        evaluation = await self.model.with_structured_output(ReportEvaluation).ainvoke(messages)
         
         # Determine if additional questions are needed based on grade
         if evaluation.grade == 1:

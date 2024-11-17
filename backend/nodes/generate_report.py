@@ -1,77 +1,86 @@
-import tldextract
-import re
 from datetime import datetime
-from langchain_core.messages import AIMessage, SystemMessage
-from ..format_classes import ResearchState, QuotedAnswer
-from ..utils.utils import final_model
+from langchain_core.messages import AIMessage
+from langchain_anthropic import ChatAnthropic
+from ..format_classes import ResearchState
+
+
 
 class GenerateNode:
     def __init__(self):
-        pass
-    def clean_quote(self, quote: str) -> str:
-        # Remove leading/trailing whitespace
-        quote = quote.strip()
-        # Replace multiple spaces and newlines with single spaces
-        quote = re.sub(r'\s+', ' ', quote)
-        return quote
+        self.model = ChatAnthropic(
+            model="claude-3-5-sonnet-20240620",
+            temperature=0
+        )
+    def extract_markdown_content(self, content):
+        # Strip out extra preamble or conversational text, retaining only Markdown.
+        start_index = content.find("#")  # Find the start of the markdown sections
+        if start_index != -1:
+            return content[start_index:].strip()
+        return content.strip()
+
     async def generate_report(self, state: ResearchState):
-            # Define a consistent title and subtitle format
         report_title = f"Weekly Report on {state['company']}"
         report_date = datetime.now().strftime('%B %d, %Y')
 
-        prompt = f"""
-            You are an expert researcher tasked with writing a fact-based report on recent developments for the company **{state['company']}**. Format the report in Markdown with the following sections only, without adding a title or subtitle. Only include the section content.
+        # prompt = f"""
+        # You are an expert researcher tasked with writing a fact-based report on recent developments for the company **{state['company']}**. Write the report in Markdown format, but **do not include a title**:
+        # Documents to Base the Report On:
+        # {state['documents']}
 
-            ### Report Structure:
-            1. **Executive Summary**:
-            - Provide a high-level overview of the company and the service it provides, where it is located, and the number of employees.
+        # """
+        prompt = f"""
+        You are an expert researcher tasked with writing a fact-based report on recent developments for the company **{state['company']}**. Write the report in Markdown format, but **do not include a title**. Each section must be written in well-structured paragraphs, not lists or bullet points.
+        Ensure the report includes:
+        - **Inline citations** as Markdown hyperlinks directly in the main sections (e.g., Company X is an innovative leader in AI ([LinkedIn](https://linkedin.com))).
+        - A **Citations Section** at the end that lists all URLs used.
+
+        ### Report Structure:
+        1. **Executive Summary**:
+            - High-level overview of the company, its services, location, employee count, and achievements.
             - Make sure to include the general information necessary to understand the company well including any notable achievements.
 
-            2. **Leadership and Vision**:
-            - Highlight the **CEO** and other key team members, especially if their experience aligns with the company’s strategic goals.
-            - Mention key personnel changes, such as new hires or departures in pivotal roles, and their anticipated impact on the company’s strategy.
-            - Include quotes or statements from leadership to reflect their vision if available.
+        2. **Leadership and Vision**:
+            - Details on the CEO and key team members, their experience, and alignment with company goals.
+            - Any personnel changes and their strategic impact.
 
-            3. **Product and Service Overview**:
-            - Summarize current products/services, focusing on unique features, market fit, and recent updates.
-            - Highlight product specifics, particularly from the original company website, including new tools, integrations, or feature updates.
-            - Mention customer impact metrics if available, such as satisfaction scores or adoption rates.
+        3. **Product and Service Overview**:
+            - Summary of current products/services, features, updates, and market fit.
+            - Include details from the company's website, tools, or new integrations.
 
-            4. **Financial Performance**:
-            - For public companies, summarize key metrics like **revenue growth, market cap, and stock performance**.
-            - For startups, emphasize **funding rounds, key investors, and revenue milestones**.
-            - Note any recent shifts in financial strategy, such as a focus on profitability or R&D investment.
+        4. **Financial Performance**:
+            - For public companies: key metrics (e.g., revenue, market cap).
+            - For startups: funding rounds, investors, and milestones.
 
-            5. **Recent Developments**:
-            - Outline any product enhancements, strategic partnerships, or other significant initiatives.
-            - Include competitive moves, such as market entries or client acquisitions, and how **{state['company']}** is positioned in response.
+        5. **Recent Developments**:
+            - New product enhancements, partnerships, competitive moves, or market entries.
 
-            ### Initial Company Information:
-            This section contains information directly from the company's website:
-            {state['initial_documents']}
+        6. **Citations**:
+            - Ensure every source cited in the report is listed in the text as Markdown hyperlinks.
+            - Also include a list of all URLs as Markdown hyperlinks in this section.
 
-            ### Documents to Base the Report On:
-            {state['documents']}
-            """
+        ### Documents to Base the Report On:
+        {state['documents']}
+        """
 
-            # Invoke model for report generation
-        messages = [SystemMessage(content=prompt)]
-        response = await final_model.with_structured_output(QuotedAnswer).ainvoke(messages)
-            
-            # Assemble the final report with a consistent title and date
-        full_report = f"# {report_title}\n\n*{report_date}*\n\n" + response.answer
+        messages = [("system", "Your task is to generate a Markdown report."), ("human", prompt)]
 
-            # Append citations only if needed, formatted separately from the main report
-        if response.citations:
+        try:
+            # Invoke the model
+            response = await self.model.ainvoke(messages)
 
-            full_report += "\n\n### Citations\n"
-            for citation in response.citations:
-                domain_name = tldextract.extract(citation.source_id).domain.capitalize()  # Extract and capitalize the domain name
-                cleaned_quote = self.clean_quote(citation.quote)
-                full_report += f"- [{domain_name}]({citation.source_id}): \"{cleaned_quote}\"\n"
+            # Extract the Markdown content
+            markdown_content = self.extract_markdown_content(response.content)
 
-            # Return the report with the title, subtitle, and content
-        return {"messages": [AIMessage(content=f"Generated Report:\n{full_report}")], "report": full_report}
+            # Add the title and date to the response
+            full_report = f"# {report_title}\n\n*{report_date}*\n\n{markdown_content}"
+            return {"messages": [AIMessage(content=f"Generated Report:\n{full_report}")], "report": full_report}
+        except Exception as e:
+            error_message = f"Error generating report: {str(e)}"
+            return {
+                "messages": [AIMessage(content=error_message)],
+                "report": f"# Error Generating Report\n\n*{report_date}*\n\n{error_message}"
+            }
+
 
     async def run(self, state: ResearchState):
         result = await self.generate_report(state)

@@ -1,7 +1,7 @@
 langgraph
 tavily-python
 langchain
-langchain_openai
+langchain-anthropic
 pypandoc
 pandoc
 tldextract
@@ -11,5 +11,6 @@ fastapi
 uvicorn
 python-multipart
 python-dotenv
+markdown2
 
 

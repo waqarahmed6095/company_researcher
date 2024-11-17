@@ -3,7 +3,11 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
+import markdown2  # Import markdown2 to render markdown to HTML
 from backend.graph import Graph  # Adjust this import if necessary 
+
+from dotenv import load_dotenv
+load_dotenv('.env')
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
@@ -32,7 +36,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
         # Run the graph process without additional arguments
         await graph.run(progress_callback=progress_callback)
-        
+
         await websocket.send_text("Research completed.")
     except WebSocketDisconnect:
         print("WebSocket disconnected")
@@ -40,4 +44,10 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.close()
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run(
+        "app:app",
+        host="127.0.0.1",
+        port=8000,
+        reload=True,
+        timeout_keep_alive=1020  # Increase timeout to 120 seconds (or any value you prefer)
+    )
