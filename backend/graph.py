@@ -66,7 +66,7 @@ class Graph:
 
         self.workflow.add_node("clustering_message", 
             lambda _: {"messages": [AIMessage(content="Starting the clustering process...")]})
-        
+    
         # Add edges to graph
         self.workflow.add_edge("initial_grounding", "sub_questions_gen")
         self.workflow.add_edge("sub_questions_gen", "research")

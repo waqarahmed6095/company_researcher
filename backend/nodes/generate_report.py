@@ -12,11 +12,19 @@ class GenerateNode:
             temperature=0
         )
     def extract_markdown_content(self, content):
-        # Strip out extra preamble or conversational text, retaining only Markdown.
-        start_index = content.find("#")  # Find the start of the markdown sections
-        if start_index != -1:
-            return content[start_index:].strip()
-        return content.strip()
+    # Strip out extra preamble or conversational text, retaining only Markdown.
+        start_index_hash = content.find("#")
+        start_index_bold = content.find("**")
+        
+        if start_index_hash != -1 and (start_index_bold == -1 or start_index_hash < start_index_bold):
+            # '#' found and it comes before '**' (or '**' not found)
+            return content[start_index_hash:].strip()
+        elif start_index_bold != -1:
+            # '**' found
+            return content[start_index_bold:].strip()
+        else:
+            # Neither '#' nor '**' found, return the whole content stripped
+            return content.strip()
 
     async def generate_report(self, state: ResearchState):
         report_title = f"Weekly Report on {state['company']}"
