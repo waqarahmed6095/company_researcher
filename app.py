@@ -46,7 +46,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "app:app",
         host="127.0.0.1",
-        port=8000,
-        reload=True,
-        timeout_keep_alive=1020  # Increase timeout to 120 seconds (or any value you prefer)
+        port=5000,
+        reload=True
     )
+   
