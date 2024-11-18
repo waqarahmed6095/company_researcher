@@ -82,14 +82,14 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 
 ## Running the Tool in LangGraph Studio
 
+**LangGraph Studio** enables visualization, debugging, and real-time interaction with the Company Researcher's workflow. Here’s how to set it up:
+
 ---
 <div align="center">
   <img src="https://github.com/user-attachments/assets/567f36b4-89cb-4ab2-8fcb-44b85b9da245" alt="Langgraph Studio" height="500">
 </div>
 
 ---
-
-**LangGraph Studio** enables visualization, debugging, and real-time interaction with the Company Researcher's workflow. Here’s how to set it up:
 
 ### Prerequisites
 
