@@ -52,7 +52,19 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
    cd company_researcher
    ```
 
-2. **Set Up API Keys**:
+2. **Create a Virtual Environment**:
+
+   To avoid dependency conflicts, it's recommended to create and activate a virtual environment:
+
+   Using `venv`:
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate    # macOS/Linux
+   venv\Scripts\activate       # Windows
+   ```
+
+3. **Set Up API Keys**:
    Configure your OpenAI and Tavily API keys as environment variables or place them in a `.env` file:
 
    ```bash
@@ -60,24 +72,25 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
    export ANTHROPIC_API_KEY={Your Anthropic API Key here}
    ```
 
-3. **Install Dependencies**:
+4. **Install Dependencies**:
 
+   Install the required Python packages:
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Run the Application**:
+5. **Run the Application**:
 
    ```bash
    python app.py
    ```
 
-5. **Open the App in Your Browser**:
+6. **Open the App in Your Browser**:
 
    ```bash
-   http://localhost:8000
+   http://localhost:5000
    ```
-
+   
 ---
 
 ## Running the Tool in LangGraph Studio
