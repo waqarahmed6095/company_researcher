@@ -54,9 +54,7 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 
 2. **Create a Virtual Environment**:
 
-   To avoid dependency conflicts, it's recommended to create and activate a virtual environment:
-
-   Using `venv`:
+   To avoid dependency conflicts, it's recommended to create and activate a virtual environment using `venv`:
 
    ```bash
    python -m venv venv
@@ -90,7 +88,7 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
    ```bash
    http://localhost:5000
    ```
-   
+
 ---
 
 ## Running the Tool in LangGraph Studio
