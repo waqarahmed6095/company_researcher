@@ -11,7 +11,7 @@ class InitialGroundingNode:
 
     # Use Tavily Extract to get base content from provided company URL
     async def initial_search(self, state: ResearchState):
-        msg = f"🔎 Initiating initial grounding for company: {state['company']}.\n"
+        msg = f"🔎 Initiating initial grounding for company '{state['company']}'...\n"
 
         urls = []
         urls.append(state['company_url'])

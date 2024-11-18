@@ -21,7 +21,7 @@ class ResearcherNode():
                 # Add date to the query as we need the most recent results
                 query_with_date = f"{itm.query} {datetime.now().strftime('%m-%Y')}"
                 # Attempt to perform the search, hardcoding days to 7 (days will be used only when topic is news)
-                response = await self.tavily_client.search(query=query_with_date, topic="general", max_results=5)
+                response = await self.tavily_client.search(query=query_with_date, topic="general", max_results=7)
                 return response['results']
             except Exception as e:
                 # Handle any exceptions, log them, and return an empty list

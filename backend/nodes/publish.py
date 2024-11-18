@@ -29,12 +29,12 @@ class PublishNode:
         if output_format == "pdf":
             pdf_file_path = f"{file_base}.pdf"
             await self.markdown_to_pdf(markdown_content=report, output_path=pdf_file_path)
-            formatted_report = f"PDF report saved at {pdf_file_path}"
+            formatted_report = f"📥 PDF report saved at {pdf_file_path}"
         else:
             markdown_file_path = f"{file_base}.md"
             with open(markdown_file_path, "w") as md_file:
                 md_file.write(report)
-            formatted_report = f"Markdown report saved at {markdown_file_path}"
+            formatted_report = f"📥 Markdown report saved at {markdown_file_path}"
 
         return {"messages": [AIMessage(content=formatted_report)]}
 

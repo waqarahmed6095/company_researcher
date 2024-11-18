@@ -29,10 +29,8 @@ class ClusterNode:
                 unique_urls.append({'url': url, 'content': doc.get('content', '')})
                 seen_urls.add(url)
 
-        # all_retrieved_urls = [{'url': url, 'content': doc.get('content', '')} for url, doc in documents.items()]
-        
-        # Pass in the first 20 URLs
-        urls = unique_urls[:20]
+        # Pass in the first 25 URLs
+        urls = unique_urls[:25]
 
         # LLM prompt to categorize documents accurately
         prompt = f"""
@@ -135,7 +133,7 @@ class ClusterNode:
 
     async def run(self, state: ResearchState, websocket):
         if websocket:
-            await websocket.send_text("Beginning clustering documents...")
+            await websocket.send_text("🔄 Beginning clustering process...")
 
         cluster_result = await self.cluster(state)
         state['document_clusters'] = cluster_result['document_clusters'] 
