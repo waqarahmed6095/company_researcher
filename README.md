@@ -20,7 +20,7 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 The **Company Researcher** is an open-source tool designed for in-depth company analysis. Built with **Tavily’s search and extract capabilities** and powered by **LangGraph**, it gathers both general and targeted information, using feedback loops and optional human validation for accuracy. It is designed to handle complex scenarios, such as distinguishing similarly named companies or gathering data in sparsely documented fields, and can be easily adapted to other research domains.
 
 ---
-![Alt Text](https://github.com/danielleyahalom/company_researcher/issues/1#issue-2666804083)
+![Alt Text](https://github.com/user-attachments/assets/eef308f4-2518-4a03-944d-6074b973d3d7)
 
 ---
 
@@ -83,7 +83,7 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 ## Running the Tool in LangGraph Studio
 
 ---
-![Langraph Studio](https://github.com/danielleyahalom/company_researcher/issues/2#issue-2666806522)
+![Langraph Studio]("https://github.com/user-attachments/assets/567f36b4-89cb-4ab2-8fcb-44b85b9da245")
 
 ---
 
