@@ -122,14 +122,14 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 
 2. **Configure the Environment**:
    - Create a `.env` file in the root directory to store your API keys:
-     ```bash
-     touch .env
-     ```
+   ```bash
+   touch .env
+   ```
    - Add your API keys to the `.env` file:
-      ```bash
-      TAVILY_API_KEY={Your Tavily API Key here}
-      ANTHROPIC_API_KEY={Your Anthropic API Key here}
-      ```
+   ```bash
+   TAVILY_API_KEY={Your Tavily API Key here}
+   ANTHROPIC_API_KEY={Your Anthropic API Key here}
+   ```
 
 3. **Ensure LangGraph Configuration Files Are in Place**:
    - The repository includes `langgraph.json` and `langgraph_entry.py`, defining the entry point and configuration for LangGraph Studio.
