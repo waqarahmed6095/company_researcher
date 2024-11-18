@@ -9,6 +9,7 @@ fpdf
 flask
 fastapi 
 uvicorn
+websockets
 python-multipart
 python-dotenv
 markdown2
