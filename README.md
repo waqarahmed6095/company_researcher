@@ -83,7 +83,7 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 ## Running the Tool in LangGraph Studio
 
 ---
-![Langraph Studio]("https://github.com/user-attachments/assets/567f36b4-89cb-4ab2-8fcb-44b85b9da245")
+![Langraph Studio](https://github.com/user-attachments/assets/567f36b4-89cb-4ab2-8fcb-44b85b9da245)
 
 ---
 
