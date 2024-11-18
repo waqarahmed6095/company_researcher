@@ -20,6 +20,9 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 The **Company Researcher** is an open-source tool designed for in-depth company analysis. Built with **Tavily’s search and extract capabilities** and powered by **LangGraph**, it gathers both general and targeted information, using feedback loops and optional human validation for accuracy. It is designed to handle complex scenarios, such as distinguishing similarly named companies or gathering data in sparsely documented fields, and can be easily adapted to other research domains.
 
 ---
+![Alt Text](https://github.com/danielleyahalom/company_researcher/issues/1#issue-2666804083)
+
+---
 
 ## Key Workflow Features
 1. **Establishing a Ground Truth with Tavily Extract**: Each session begins by setting a “ground truth” with Tavily’s `extract` tool, using a user-provided company name and URL. This foundational data anchors the subsequent search, ensuring all steps stay within accurate and verified data boundaries.
@@ -79,9 +82,10 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
 
 ## Running the Tool in LangGraph Studio
 
-<div align="center">
-  <img src="/diagrams/studio.png" alt="Langgraph Studio" height="500">
-</div>
+---
+![Langraph Studio](https://github.com/danielleyahalom/company_researcher/issues/2#issue-2666806522)
+
+---
 
 **LangGraph Studio** enables visualization, debugging, and real-time interaction with the Company Researcher's workflow. Here’s how to set it up:
 
@@ -111,7 +115,7 @@ The **Company Researcher** is an open-source tool designed for in-depth company 
    - Add your API keys to the `.env` file:
       ```bash
       TAVILY_API_KEY={Your Tavily API Key here}
-      OPENAI_API_KEY={Your OpenAI API Key here}
+      ANTHROPIC_API_KEY={Your Anthropic API Key here}
       ```
 
 3. **Ensure LangGraph Configuration Files Are in Place**:
