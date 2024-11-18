@@ -1,8 +1,9 @@
 
 import os
 from datetime import datetime
+from langchain_core.messages import AIMessage
 from ..utils.utils import generate_pdf_from_md
-from ..format_classes import ResearchState
+from ..classes import ResearchState
 
 class PublishNode:
     def __init__(self, output_dir="reports"):
@@ -14,7 +15,6 @@ class PublishNode:
         try:  
             # Generate the PDF from Markdown content
             generate_pdf_from_md(markdown_content, output_path)
-            print(f"PDF report generated at: {output_path}")
         except Exception as e:
             raise Exception(f"Failed to generate PDF: {str(e)}")
 
@@ -36,7 +36,7 @@ class PublishNode:
                 md_file.write(report)
             formatted_report = f"Markdown report saved at {markdown_file_path}"
 
-        return {"messages": [{"role": "assistant", "content": "Final report formatted."}], "save_report": formatted_report}
+        return {"messages": [AIMessage(content=formatted_report)]}
 
     async def run(self, state: ResearchState):
         result = await self.format_output(state)

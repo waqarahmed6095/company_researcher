@@ -1,14 +1,14 @@
 from datetime import datetime
 from langchain_core.messages import AIMessage
 from langchain_anthropic import ChatAnthropic
-from ..format_classes import ResearchState
+from ..classes import ResearchState
 
 
 
 class GenerateNode:
     def __init__(self):
         self.model = ChatAnthropic(
-            model="claude-3-5-sonnet-20240620",
+            model="claude-3-5-haiku-20241022",
             temperature=0
         )
     def extract_markdown_content(self, content):
@@ -81,7 +81,7 @@ class GenerateNode:
 
             # Add the title and date to the response
             full_report = f"# {report_title}\n\n*{report_date}*\n\n{markdown_content}"
-            return {"messages": [AIMessage(content=f"Generated Report:\n{full_report}")], "report": full_report}
+            return {"messages": [AIMessage(content=f"Report generated successfully!\n{full_report}")], "report": full_report}
         except Exception as e:
             error_message = f"Error generating report: {str(e)}"
             return {
@@ -90,6 +90,8 @@ class GenerateNode:
             }
 
 
-    async def run(self, state: ResearchState):
+    async def run(self, state: ResearchState, websocket):
+        if websocket:
+            await websocket.send_text("⌛️ Generating report...")
         result = await self.generate_report(state)
         return result

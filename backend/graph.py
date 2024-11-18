@@ -4,7 +4,7 @@ from langgraph.graph import StateGraph
 from langgraph.checkpoint.memory import MemorySaver
 
 # Import research state class
-from backend.format_classes.research_state import ResearchState, InputState, OutputState
+from backend.classes.research_state import ResearchState, InputState, OutputState
 
 # Import node classes
 from backend.nodes import (
@@ -57,22 +57,17 @@ class Graph:
         self.workflow.add_node("initial_grounding", self.initial_search_node.run)
         self.workflow.add_node("sub_questions_gen", self.sub_questions_node.run)
         self.workflow.add_node("research", self.researcher_node.run)
-        self.workflow.add_node("cluster", self.cluster_node.run)
+        self.workflow.add_node("cluster", partial(self.cluster_node.run, websocket=websocket))
         self.workflow.add_node("manual_cluster_selection", partial(self.manual_selection_node.run, websocket=websocket))
         self.workflow.add_node("enrich_docs", self.curate_node.run)
-        self.workflow.add_node("generate_report", self.generate_node.run)
+        self.workflow.add_node("generate_report", partial(self.generate_node.run, websocket=websocket))
         self.workflow.add_node("eval_report", self.evaluation_node.run)
         self.workflow.add_node("publish", self.publish_node.run)
 
-        self.workflow.add_node("clustering_message", 
-            lambda _: {"messages": [AIMessage(content="Starting the clustering process...")]})
-    
         # Add edges to graph
         self.workflow.add_edge("initial_grounding", "sub_questions_gen")
         self.workflow.add_edge("sub_questions_gen", "research")
-        self.workflow.add_edge("research", "clustering_message")
-        self.workflow.add_edge("clustering_message", "cluster")
-
+        self.workflow.add_edge("research", "cluster")
         self.workflow.add_conditional_edges("cluster", route_based_on_cluster)
         self.workflow.add_conditional_edges("manual_cluster_selection", route_after_manual_selection)
         self.workflow.add_conditional_edges("enrich_docs", should_continue_research)
@@ -88,7 +83,6 @@ class Graph:
 
     
     async def run(self, progress_callback=None):
-        
         # Compile the graph
         graph = self.workflow.compile(checkpointer=self.memory)
         thread = {"configurable": {"thread_id": "2"}}
@@ -102,7 +96,6 @@ class Graph:
 
                 if progress_callback and not getattr(message, "is_manual_selection", False):
                     await progress_callback(output_message)
-
     def compile(self):
     # Use a consistent thread ID for state persistence
         thread = {"configurable": {"thread_id": "2"}}

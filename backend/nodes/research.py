@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import List
 
 
-from ..format_classes import ResearchState, TavilyQuery
+from ..classes import ResearchState, TavilyQuery
 
 class ResearcherNode():
     def __init__(self):

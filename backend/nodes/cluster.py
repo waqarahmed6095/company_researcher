@@ -1,13 +1,14 @@
 from langchain_core.messages import AIMessage
 from langchain_anthropic import ChatAnthropic
 
-from ..format_classes import ResearchState,DocumentClusters
+from ..classes import ResearchState,DocumentClusters
+
 
 
 class ClusterNode:
     def __init__(self):
         self.model = ChatAnthropic(
-            model="claude-3-5-sonnet-20240620",
+            model="claude-3-5-haiku-20241022",
             temperature=0
         )
 
@@ -132,7 +133,10 @@ class ClusterNode:
         msg = "No automatic cluster match found. Please select the correct cluster manually."
         return {"messages": [AIMessage(content=msg)], "document_clusters": clusters, "chosen_cluster": None}
 
-    async def run(self, state: ResearchState):
+    async def run(self, state: ResearchState, websocket):
+        if websocket:
+            await websocket.send_text("Beginning clustering documents...")
+
         cluster_result = await self.cluster(state)
         state['document_clusters'] = cluster_result['document_clusters'] 
         choose_cluster_result = await self.choose_cluster(state)

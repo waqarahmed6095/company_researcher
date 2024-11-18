@@ -1,11 +1,11 @@
 from langchain_core.messages import AIMessage
 from langchain_anthropic import ChatAnthropic
-from ..format_classes import ResearchState, TavilySearchInput
+from ..classes import ResearchState, TavilySearchInput
 
 class SubQuestionsNode:
     def __init__(self) -> None:
         self.model = ChatAnthropic(
-            model="claude-3-5-sonnet-20240620",
+            model="claude-3-5-haiku-20241022",
             temperature=0
         )
      

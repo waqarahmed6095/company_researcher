@@ -2,7 +2,7 @@ from langchain_core.messages import AIMessage
 from tavily import AsyncTavilyClient
 import os
 
-from ..format_classes import ResearchState
+from ..classes import ResearchState
 
 
 class InitialGroundingNode:

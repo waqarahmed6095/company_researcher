@@ -1,5 +1,5 @@
 from typing import Literal
-from ..format_classes import ResearchState
+from ..classes import ResearchState
 
 from langchain_core.messages import AIMessage
 

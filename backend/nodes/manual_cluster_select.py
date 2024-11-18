@@ -1,7 +1,7 @@
 # In your node file
 from langchain_core.messages import AIMessage
 from langgraph.errors import NodeInterrupt
-from ..format_classes import ResearchState
+from ..classes import ResearchState
 
 class ManualSelectionNode:
     async def manual_cluster_selection(self, state: ResearchState, websocket):

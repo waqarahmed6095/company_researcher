@@ -1,12 +1,12 @@
 from langchain_core.messages import AIMessage
-from ..format_classes import ResearchState, TavilySearchInput, TavilyQuery, ReportEvaluation
+from ..classes import ResearchState, TavilySearchInput, TavilyQuery, ReportEvaluation
 from langchain_anthropic import ChatAnthropic
 
 
 class EvaluationNode:
     def __init__(self):
         self.model = ChatAnthropic(
-            model="claude-3-5-sonnet-20240620",
+            model="claude-3-5-haiku-20241022",
             temperature=0
         )
 
@@ -37,7 +37,7 @@ class EvaluationNode:
         
         # Determine if additional questions are needed based on grade
         if evaluation.grade == 1:
-            msg = f"The report received a grade of 1. Critical gaps identified: {', '.join(evaluation.critical_gaps or ['None specified'])}"
+            msg = f"❌ The report received a grade of 1. Critical gaps identified: {', '.join(evaluation.critical_gaps or ['None specified'])}"
             # Create new sub-questions for critical gaps
             new_sub_queries = [
                 TavilyQuery(query=f"Gather information on {gap} for {state['company']}", topic="general", days=30)
@@ -49,7 +49,7 @@ class EvaluationNode:
                 state['sub_questions'] = TavilySearchInput(sub_queries=new_sub_queries)
             return {"messages": [AIMessage(content=msg)], "eval": evaluation, "sub_questions": state['sub_questions']}
         else:
-            msg = f"The report received a grade of {evaluation.grade} and is marked as complete."
+            msg = f"✅ The report received a grade of {evaluation.grade}/3 and is marked as complete."
             return {"messages": [AIMessage(content=msg)], "eval": evaluation}
 
     async def run(self, state: ResearchState):

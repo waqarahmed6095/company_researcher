@@ -18,7 +18,6 @@ class ResearchState(TypedDict):
     report: str
     eval: ReportEvaluation
     output_format: str
-    save_report: str
     messages: Annotated[list[AnyMessage], add_messages]
 
 class InputState(TypedDict):

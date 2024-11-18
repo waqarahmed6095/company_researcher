@@ -2,6 +2,7 @@
 import re
 from fpdf import FPDF
 
+
 class CustomPDF(FPDF):
     def __init__(self):
         super().__init__()
