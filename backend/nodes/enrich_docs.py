@@ -8,17 +8,19 @@ class EnrichDocsNode:
     Curates documents based on the selected cluster stored in `chosen_cluster`,
     then enriches the content with Tavily Extract for more detailed information.
     """
-    def __init__(self):
+    def __init__(self,mcp:bool=False):
         self.tavily_client = AsyncTavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
+        self.mcp=mcp
     async def curate(self, state: ResearchState):
-        chosen_cluster_index = state['chosen_cluster']
-        clusters = state['document_clusters']
-        chosen_cluster = clusters[chosen_cluster_index]
-        msg = f"🚀 Enriching documents for selected cluster '{chosen_cluster.company_name}'...\n"
-
-        # Filter `documents` to include only those in the chosen cluster
-        selected_docs = {url: state['documents'][url] for url in chosen_cluster.cluster if url in state['documents']}
-
+        if not self.mcp:
+            chosen_cluster_index = state['chosen_cluster']
+            clusters = state['document_clusters']
+            chosen_cluster = clusters[chosen_cluster_index]
+            msg = f"🚀 Enriching documents for selected cluster '{chosen_cluster.company_name}'...\n"
+            selected_docs = {url: state['documents'][url] for url in chosen_cluster.cluster if url in state['documents']}
+        else:
+            msg = f"🚀 Enriching documents for selected cluster '{state['company']}'...\n"
+            selected_docs = {url: state['documents'][url] for url in state['documents']}
         # Limit to first 15 URLs 
         urls_to_extract = list(selected_docs.keys())[:15]
         

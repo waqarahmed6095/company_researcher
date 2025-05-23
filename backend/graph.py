@@ -27,7 +27,8 @@ from backend.utils.routing_helper import (
 
 
 class Graph:
-    def __init__(self, company=None, url=None, output_format="pdf", websocket=None):
+    def __init__(self, company=None, url=None, output_format="pdf", websocket=None,mcp:bool=False):
+        self.mcp=mcp
         # Initial setup of ResearchState and messages
         self.messages = [
             SystemMessage(content="You are an expert researcher ready to begin the information gathering process.")
@@ -44,8 +45,12 @@ class Graph:
         self.sub_questions_node = SubQuestionsNode()
         self.researcher_node = ResearcherNode()
         self.cluster_node = ClusterNode()
-        self.manual_selection_node = ManualSelectionNode()  # Now an attribute
-        self.curate_node = EnrichDocsNode()
+        self.manual_selection_node = ManualSelectionNode()  # Now an attribute'
+        print(self.mcp)
+        if not self.mcp:
+            self.curate_node = EnrichDocsNode(mcp=self.mcp)
+        else:
+            self.curate_node = EnrichDocsNode(mcp=self.mcp)
         self.generate_node = GenerateNode()
         self.evaluation_node = EvaluationNode()
         self.publish_node = PublishNode()
@@ -57,8 +62,9 @@ class Graph:
         self.workflow.add_node("initial_grounding", self.initial_search_node.run)
         self.workflow.add_node("sub_questions_gen", self.sub_questions_node.run)
         self.workflow.add_node("research", self.researcher_node.run)
-        self.workflow.add_node("cluster", partial(self.cluster_node.run, websocket=websocket))
-        self.workflow.add_node("manual_cluster_selection", partial(self.manual_selection_node.run, websocket=websocket))
+        if not self.mcp:
+            self.workflow.add_node("cluster", partial(self.cluster_node.run, websocket=websocket))
+            self.workflow.add_node("manual_cluster_selection", partial(self.manual_selection_node.run, websocket=websocket))
         self.workflow.add_node("enrich_docs", self.curate_node.run)
         self.workflow.add_node("generate_report", partial(self.generate_node.run, websocket=websocket))
         self.workflow.add_node("eval_report", self.evaluation_node.run)
@@ -67,9 +73,13 @@ class Graph:
         # Add edges to graph
         self.workflow.add_edge("initial_grounding", "sub_questions_gen")
         self.workflow.add_edge("sub_questions_gen", "research")
-        self.workflow.add_edge("research", "cluster")
-        self.workflow.add_conditional_edges("cluster", route_based_on_cluster)
-        self.workflow.add_conditional_edges("manual_cluster_selection", route_after_manual_selection)
+        if self.mcp:
+            self.workflow.add_edge("research", "enrich_docs")
+        else:
+            self.workflow.add_edge("research", "cluster")
+            self.workflow.add_edge("cluster", "enrich_docs")
+            self.workflow.add_conditional_edges("cluster", route_based_on_cluster)
+            self.workflow.add_conditional_edges("manual_cluster_selection", route_after_manual_selection)
         self.workflow.add_conditional_edges("enrich_docs", should_continue_research)
         self.workflow.add_edge("generate_report", "eval_report")
         self.workflow.add_conditional_edges("eval_report", route_based_on_evaluation)
